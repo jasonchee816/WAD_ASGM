@@ -5,7 +5,7 @@ import {
     View
 } from 'react-native';
 
-export function DropListWithLabel(props) {
+export function DropDownListWithLabel(props) {
     props.foodId = undefined;
     props.name = '';
     props.price = undefined;

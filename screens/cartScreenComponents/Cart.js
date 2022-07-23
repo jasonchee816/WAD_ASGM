@@ -62,7 +62,7 @@ export default class Cart extends Component {
                     </div>
 
                     {/* Quantity Picker */}
-                    <QuantityPicker />
+                    <QuantityPicker quantity={this.state.quantity}/>
                     <!-- Quantity Picker (Group) -->
                     <div id="u6" class="ax_default" data-label="Quantity Picker" data-left="580" data-top="98" data-width="60" data-height="25">
 
@@ -106,7 +106,7 @@ export default class Cart extends Component {
                 <Divider />
 
                 {/* Table Number Input */}
-                <DropListWithLabel label="Table no." input={this.state.tableNo} min={0} max={30} /> 
+                <DropDownListWithLabel label="Table no." input={this.state.tableNo} min={0} max={30} /> 
                 <div id="u23" class="ax_default" data-label="Table Number" data-left="364" data-top="466" data-width="258" data-height="22">
 
                     <!-- Table Number Input (Droplist) -->
