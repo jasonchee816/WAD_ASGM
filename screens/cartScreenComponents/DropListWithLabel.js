@@ -5,11 +5,7 @@ import {
     View
 } from 'react-native';
 
-function QuantityPicker(props) {
-    
-}
-
-export function CartItem(props) {
+export function DropListWithLabel(props) {
     props.foodId = undefined;
     props.name = '';
     props.price = undefined;
