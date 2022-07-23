@@ -1,112 +1,149 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+import React, {Component} from 'react';
+import {StyleSheet, Button, Text, View, Alert} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {TouchableHighlight} from 'react-native-gesture-handler';
 
-import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import LoginScreen from './screens/LoginScreen';
+import SignUpScreen from './screens/SignUpScreen';
+import MainMenuScreen from './screens/MainMenuScreen';
+import CartScreen from './screens/CartScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import OrderHistoryScreen from './screens/OrderHistoryScreen';
+import ChangePasswordScreen from './screens/ChangePasswordScreen';
+import OrderDetailsScreen from './screens/OrderDetailsScreen';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const MainStack = createStackNavigator();
+const NotLoginedStack = createStackNavigator();
+const LoginedDrawer = createDrawerNavigator();
+const MainMenuTab = createBottomTabNavigator();
+const ProfileStack = createStackNavigator();
+const OrderHistoryStack = createStackNavigator();
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+class NotLoginedStackScreen extends Component {
+  render() {
+    return (
+      <NotLoginedStack.Navigator>
+        <NotLoginedStack.Screen name="Login" component={LoginScreen} />
+        <NotLoginedStack.Screen name="Sign Up" component={SignUpScreen} />
+      </NotLoginedStack.Navigator>
+    );
+  }
+}
 
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+class LoginedDrawerScreen extends Component {
+  render() {
+    return (
+      <LoginedDrawer.Navigator>
+        <LoginedDrawer.Screen name="Homepage" component={MainMenuTabScreen} />
+        <LoginedDrawer.Screen name="Profile" component={ProfileScreen} />
+        <LoginedDrawer.Screen
+          name="Order History"
+          component={OrderHistoryStackScreen}
+        />
+      </LoginedDrawer.Navigator>
+    );
+  }
+}
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+class MainMenuTabScreen extends Component {
+  render() {
+    return (
+      <MainMenuTab.Navigator>
+        <MainMenuTab.Screen name="MainMenu" component={MainMenuScreen} />
+        <MainMenuTab.Screen name="Cart" component={CartScreen} />
+      </MainMenuTab.Navigator>
+    );
+  }
+}
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
+class ProfileStackScreen extends Component {
+  render() {
+    return (
+      <ProfileStack.Navigator>
+        <ProfileStack.Screen name="Profile" component={ProfileScreen} />
+        <ProfileStack.Screen
+          name="Change Password"
+          component={ChangePasswordScreen}
+        />
+      </ProfileStack.Navigator>
+    );
+  }
+}
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+class OrderHistoryStackScreen extends Component {
+  render() {
+    return (
+      <OrderHistoryStack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+        initialRouteName="Order History">
+        <OrderHistoryStack.Screen
+          name="Order History"
+          component={OrderHistoryScreen}
+        />
+        <OrderHistoryStack.Screen
+          name="Order Details"
+          component={OrderDetailsScreen}
+        />
+      </OrderHistoryStack.Navigator>
+    );
+  }
+}
 
-export default App;
+export default class App extends Component<Props> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      aState: 0,
+    };
+    // console.log('[+] <FirstScreen> constructor() invoked');
+  }
+
+  // componentDidMount() {
+  //   console.log('[+] <FirstScreen> componentDidMount() invoked');
+  // }
+
+  // componentDidUpdate() {
+  //   console.log('[+] <FirstScreen> componentDidUpdate() invoked');
+  // }
+
+  // componentWillUnmount() {
+  //   console.log('[+] <FirstScreen> componentWillUnmount() invoked');
+  // }
+
+  render() {
+    // console.log('[+] <FirstScreen> render() invoked');
+    return (
+      <NavigationContainer>
+        <MainStack.Navigator screenOptions={{headerShown: false}}>
+          <MainStack.Screen
+            name="NotLogined"
+            component={NotLoginedStackScreen}
+          />
+          <MainStack.Screen name="Logined" component={LoginedDrawerScreen} />
+        </MainStack.Navigator>
+      </NavigationContainer>
+    );
+  }
+}
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: '#F5FCFF',
+//   },
+//   title: {
+//     fontSize: 20,
+//     textAlign: 'center',
+//     margin: 20,
+//   },
+//   button: {
+//     margin: 10,
+//   },
+// });
