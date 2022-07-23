@@ -1,9 +1,19 @@
 import React, {Component} from 'react';
 import {StyleSheet, Button, Text, View} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
+
 export default class Logined extends Component<Props> {
   static navigationOptions = {
     title: 'First Screen',
   };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -11,6 +21,7 @@ export default class Logined extends Component<Props> {
     };
     console.log('[+] <FirstScreen> constructor() invoked');
   }
+
   componentDidMount() {
     console.log('[+] <FirstScreen> componentDidMount() invoked');
   }
@@ -23,6 +34,13 @@ export default class Logined extends Component<Props> {
   render() {
     console.log('[+] <FirstScreen> render() invoked');
     return (
+      <NavigationContainer>
+        <Drawer.Navigator drawerStyle={{width: '45%', backgroundColor: 'purple'}} drawerType='slide' drawerContentOptions ={{activeBackgroundColor: 'red', activeTintColor: 'Black'}}>
+          <Drawer.Screen name="Home" component={MainMenuScreen} />
+          <Drawer.Screen name="Profile" component={ProfileScreen} />
+          <Drawer.Screen name="Order History" component={OrderHistoryScreen} />
+        </Drawer.Navigator>
+      </NavigationContainer>
       <View style={styles.container}>
         <Text style={styles.title}>First Screen</Text>
         <View style={styles.button}>
