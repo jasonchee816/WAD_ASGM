@@ -9,6 +9,12 @@ export const menuData = [
         imgScr: "/images/radishGreenSalad.png"
     },
     {
-
+        id: 2,
+        category: Salad,
+        name: "Honey Lime Rainbow Fruit Salad",
+        description: "Made with beautiful blend of delicious fruits and a simple dressing to compliment it.",
+        price: 11.80,
+        outOfStock: false,
+        imgScr: "/images/honeyLimeRainbow.png"
     }
 ];
