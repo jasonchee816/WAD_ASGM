@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import categories from '../consist/categories';
-import foods from '../consist/foods';
+import foods from '../screens/MenuData';
 
 const MenuScreen = () => {
   const MenuCard = ({ item }) => {
@@ -40,7 +40,7 @@ const MenuScreen = () => {
       <FlatList
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 80 }}
-        data={foods}
+        data={MenuData}
         renderItem={({ item }) => <MenuCard item={item} />}
       />
     </SafeAreaView>
