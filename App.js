@@ -94,7 +94,7 @@ class OrderHistoryStackScreen extends Component {
   }
 }
 
-export default class App extends Component<Props> {
+export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -125,6 +125,7 @@ export default class App extends Component<Props> {
             component={NotLoginedStackScreen}
           />
           <MainStack.Screen name="Logined" component={LoginedDrawerScreen} />
+		  <MainStack.Screen name="Cart" component={CartScreen} />
         </MainStack.Navigator>
       </NavigationContainer>
     );
