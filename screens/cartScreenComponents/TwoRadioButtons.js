@@ -5,36 +5,36 @@ import {
 } from 'react-native';
 import { CartStyles } from './CartStyles.js';
 
-export function DineInOrTakeawayOption(props) {
-    props.foodId = undefined;
-    props.name = '';
-    props.price = undefined;
-    props.outOfStock = undefined;
-    props.imageSource = '';
+export function TwoRadioButtons(props) {
+	const [checked, setChecked] = React.useState('');
 
-    return(
-        <View>
-<!-- Unnamed (Radio Button) -->
-<div id="u27" class="ax_default radio_button">
-    <label id="u27_input_label" for="u27_input" style="position: absolute; left: 0px;">
-    <img id="u27_img" class="img " src="images/page_1/regen/u27.svg"/>
-    <div id="u27_text" class="text ">
-        <p><span>Dine in</span></p>
-    </div>
-    </label>
-    <input id="u27_input" type="radio" value="radio" name="u27"/>
-</div>
-
-<!-- Unnamed (Radio Button) -->
-<div id="u28" class="ax_default radio_button">
-    <label id="u28_input_label" for="u28_input" style="position: absolute; left: 0px;">
-    <img id="u28_img" class="img " src="images/page_1/regen/u28.svg"/>
-    <div id="u28_text" class="text ">
-        <p><span>Take away</span></p>
-    </div>
-    </label>
-    <input id="u28_input" type="radio" value="radio" name="u28"/>
-</div>
-        </View>
-    );
+	return (
+		<View>
+			{props.options.map((option) => {
+				return(
+					<Pressable 
+						key={option} // Need a key to identify each item
+						onPress={() => {
+							setChecked(option);
+							props.onChange(option);
+						}} // Need "() =>" to declare the function, the argument of onPress is a function
+						style={checked == option ? styles.selected : styles.notSelected}
+					>
+						<Text>{option}</Text>
+					</Pressable>
+				);
+			})}
+		</View>
+	);
 }
+
+const styles = StyleSheet.create({
+	selected: {
+		backgroundColor: 'rgb(210, 230, 255)'
+	},
+	notSelected: {
+		backgroundColor: 'white'
+	}
+});
+
+// TODO layout

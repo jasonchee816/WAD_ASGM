@@ -2,7 +2,6 @@ import {
     Text, 
     View
 } from 'react-native';
-import { TouchableOpacity, TouchableHightlight } from 'react-native-gesture-handler';
 import { CartStyles } from './CartStyles.js';
 import { menuData } from '../MenuData.js';
 
@@ -13,32 +12,49 @@ import { menuData } from '../MenuData.js';
 	quantity
  */
 
+function PlusButton(props) {
+	/* props of Pressable will be inherit by PlusButton */
+	return(
+		<Pressable {...props}>
+			<Image source={require('./plusIcon.jpg')} />
+		</Pressable>
+	);
+}
+
+function MinusButton(props) {
+	return(
+		<Pressable {...props}>
+			<Image source={require('./minusIcon.png')} />
+		</Pressable>
+	);
+}
+
 export function CartItem(props) {
     let item = menuData[props.foodIndex];
-	
-	function goToFoodDetailsPage() {
+
+	function goToFoodDetailsPage(foodIndex) {
 		this.props.navigation.navigate('Food Details', {
-			index: props.foodIndex
+			index: propsfoodIndex
 		});
 	}
 
     return(
         <View>
-			<TouchableHightlight onPress={goToFoodDetailsPage()}>
+			<Pressable onPress={() => goToFoodDetailsPage(props.foodIndex)}>
 				<Image source={item.image} />
-				<Text>{item.name}</Text>
-				<Text>{item.price}</Text>	
-			</TouchableHightlight>
+				<View>
+					<Text>{item.name}</Text>
+					<Text>{item.price}</Text>
+				</View>
+			</Pressable>
 
 			<View>
-				<TouchableOpacity onPress={props.onQuantityChange(props.quantity - 1)}>
-					<Image source={require('./minusIcon.png')} />
-				</TouchableOpacity>
+				<MinusButton onPress={() => props.onQuantityChange(props.quantity - 1)} /> 
 				<Text>{props.quantity}</Text>
-				<TouchableOpacity onPress={props.onQuantityChange(props.quantity + 1)}>
-					<Image source={require('./plusIcon.jpg')} />
-				</TouchableOpacity>
+				<PlusButton onPress={() => props.onQuantityChange(props.quantity + 1)} />			
 			</View>
         </View>
     );
 }
+
+// TODO layout

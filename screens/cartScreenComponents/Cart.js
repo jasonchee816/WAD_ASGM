@@ -4,8 +4,9 @@ import {
     Text, 
     View,
     Alert,
+	FlatList
 } from 'react-native';
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import { FlatList, TouchableHighlight } from 'react-native-gesture-handler';
 import { TwoRadioButtons } from './TwoRadioButtons.js';
 import { CartItem } from './CartItem.js';
 import { DropDownListWithLabel } from './DropDownListWithLabel.js';
@@ -13,7 +14,9 @@ import { CartStyles } from './CartStyles.js';
 import { render } from 'react-native/Libraries/Renderer/implementations/ReactNativeRenderer-prod';
 
 /*
-	props = cartItems = [
+	this.props.onCartItemChange(newCartItems);
+
+	this.props.cartItems = [
 		{
 			foodIndex:
 			quantity:
@@ -30,41 +33,9 @@ export default class Cart {
 		};
 	}
 
-	setTableNo = (no) => {
-		this.setState({tableNo: no});
-	}
-
-	setDineInOrTakeaway = (option) => {
-		this.setState({dineInOrTakeaway: option});
-	}
-
-    setItemQuantity = (index, quantity) => {
-		// if quantity < 0, quantity = 0
-		if (quantity == 0) {
-            <Dialog 
-                isVisible={true}>
-                <Dialog.Title title="Do you want to delete this item" />
-                <Dialog.Actions>
-                    <Dialog.Button title="Yes" onPress={setVisible} />
-                    <Dialog.Button title="No" onPress={setVisible} />
-                </Dialog.Actions>
-            </Dialog>
-        }
-
-        if (quantity <= 0) {
-			// TODO: ask if wants to remove
-			// TODO: remove from cartItems
-			
-			return;
-		}
-		route.navigation.setParams({
-			cartItems: 
-		});
-    }
-	
     calculateTotalPrice = () => {
         let totalPrice = 0;
-        for (let item of cartItems) 
+        for (let item of this.props.cartItems) 
        		totalPrice += menuData[item.foodIndex].price * item.quantity;
         // TODO: return float, 2 decimal point
         return totalPrice;
@@ -98,28 +69,66 @@ export default class Cart {
             ToastAndroid.show("Please fill in all the details.");       
     }
 
+	renderCartItem = (item, index) => {
+		return(
+			<CartItem 
+				foodIndex={item.foodIndex} 
+				quantity={item.quantity} 
+				onQuantityChange={(newQuantity) => {
+					if (newQuantity <= 0) {
+						// Ask to remove
+						Alert.alert(
+							"Alert Title",
+							"My Alert Msg",
+							[
+							  {
+								text: "Cancel",
+								onPress: () => console.log("Cancel Pressed"),
+								style: "cancel"
+							  },
+							  { text: "OK", onPress: () => console.log("OK Pressed") }
+							]
+						  );
+					} else {
+						// Modify the quantity
+						let newCartItems = this.props.cartItems.slice(); // copy the array
+						newCartItems[index].quantity = newQuantity;
+						this.props.onCartItemChange(newCartItems);
+					}					
+				}}
+			/>
+		);		
+	}
+
 	render() {
-		var cartItems = props.cartItems;
-		var email = props.email;
+		var cartItems = this.props.cartItems;
 
 		if (!cartItems || cartItems.length <= 0) 
 			return <Text>No item in your cart.</Text>; // TODO: test that the screen will turn to this when remove all the items from cart
 
 		return(
 			<View>
-				// TODO: flatlist
-				<CartItem 
-					foodIndex={cartItems[0].foodIndex} 
-					quantity={cartItems[0].quantity} 
-					onQuantityChange={this.setItemQuantity} />
+				<FlatList 
+					data={cartItems} 
+					renderItem={({ item, index }) => this.renderCartItem(item, index)} 
+					keyExtractor={item => item.foodIndex} 
+				/>
 				<Divider />
-				<DropDownListWithLabel label="Table no." onChange={this.setTableNo} min={1} max={30} /> 
-				<TwoRadioButtons button1="Dine in" button2="Takeaway" onChange={this.setDineInOrTakeaway} />
-				<Text>Total RM{this.calculateTotalPrice()}</Text>
-
-				<TouchableHighlight>
-					<Button title="Order" onPress={this.makeOrder}/>
-				</TouchableHighlight>
+				<DropDownListWithLabel 
+					label="Table no." 
+					onChange={(no) => this.setState({tableNo: no})} 
+					min={1} 
+					max={30} 
+				/> 
+				<TwoRadioButtons 
+					options={['Dine In', 'Takeaway']} 
+					onChange={(option) => this.setState({dineInOrTakeaway: option})} 
+				/>
+				<Text>Total RM{this.calculateTotalPrice()}</Text> {/* function with (): call this when rendering */}
+				<Button 
+					title="Order" 
+					onPress={this.makeOrder} {/* function without (): call this when onPress */}
+				/>
 			</View>
 		);
 	}
