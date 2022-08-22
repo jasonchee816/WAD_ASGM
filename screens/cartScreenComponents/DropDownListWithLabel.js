@@ -1,34 +1,41 @@
-import {
-    Button, 
-    Text, 
-    View
-} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { CartStyles } from './CartStyles.js';
 
+/*
+	props:
+	min
+	max
+	onChange
+	label
+ */ 
+
 export function DropDownListWithLabel(props) {
-    props.foodId = undefined;
-    props.name = '';
-    props.price = undefined;
-    props.outOfStock = undefined;
-    props.imageSource = '';
+	// Create picker items
+	let tableNos = [];
+	for (let no = props.min, i = 0; no <= props.max; ++no, ++i)
+		tableNos[i] = no;
+	let pickerItems = tableNos.map((num) => 
+		<Picker.Item key={num} label={num.toString()} value={num}/>
+	);
 
-    return(
-        <View>
+	const [tableNo, setTableNo] = React.useState();
 
-<!-- Table Number Input (Droplist) -->
-<div id="u24" class="ax_default droplist" data-label="Table Number Input">
-    <div id="u24_div" class=""></div>
-    <select id="u24_input" class="u24_input">
-    </select>
-</div>
-
-<!-- Table Number Lable (Rectangle) -->
-<div id="u25" class="ax_default label" data-label="Table Number Lable">
-    <div id="u25_div" class=""></div>
-    <div id="u25_text" class="text ">
-    <p><span>Table No.</span></p>
-    </div>
-</div>
-        </View>
-    );
+	return(
+		<View>
+			<Text>{props.label}</Text>
+			<Picker 
+				selectedValue={tableNo}
+				onValueChange={(input) => {
+					props.onChange(input); // pass the value to the parent component
+					setTableNo(input); // reflect the changes in UI
+				}} 
+			>
+				{pickerItems}
+			</Picker>
+		</View>
+	);
 }
+
+// TODO layout

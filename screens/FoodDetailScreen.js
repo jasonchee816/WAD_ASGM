@@ -16,3 +16,4 @@ export default class FoodDetailScreen extends Component<Props> {
     return <View></View>;
   }
 }
+// TODO: an index of menuData passed from cart screen, need to display the food details
