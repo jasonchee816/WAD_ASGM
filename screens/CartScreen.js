@@ -115,8 +115,9 @@ export class CartScreen extends Component {
 
 	render() {
 		if (!this.props.cartItems || this.props.cartItems.length <= 0) 
-			return <Text style={styles.blankContainer}>No item in your cart.</Text>; // TODO: test that the screen will turn to this when remove all the items from cart
+			return <Text style={styles.blankContainer}>No item in your cart.</Text>;
 
+		// below the FlatList component
 		let footerComponent = () => (
 			<View>
 				<DropDownListWithLabel 
@@ -141,7 +142,7 @@ export class CartScreen extends Component {
 			</View>
 		);
 
-		return(
+		return (
 			<View style={styles.container}>
 				<FlatList 
 					data={this.props.cartItems} 

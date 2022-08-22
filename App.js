@@ -113,6 +113,8 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+		email: '', // Accessed by login screen, change password screen, cart screen
+		password: '', // Accessed by login screen, change password screen
 		cartItems: [
 			{
 				foodIndex: 0,

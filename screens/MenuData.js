@@ -273,8 +273,4 @@ export const menuData = [
         price: 18.00,
         image: require('../images/milleCrepe.png'),
     },
-<<<<<<< HEAD
-=======
-
->>>>>>> ed7f58fa532f15498d057d9be7a1df91b9b18a6f
 ];
