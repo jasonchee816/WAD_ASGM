@@ -10,7 +10,8 @@ import LoginScreen from './screens/LoginScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import MainMenuScreen from './screens/MainMenuScreen';
 import CartScreen from './screens/CartScreen';
-import ProfileScreen from './screens/ProfileScreen';
+import viewProfile from './screens/viewProfile';
+import editProfile from './screens/editProfile';
 import OrderHistoryScreen from './screens/OrderHistoryScreen';
 import ChangePasswordScreen from './screens/ChangePasswordScreen';
 import OrderDetailsScreen from './screens/OrderDetailsScreen';
@@ -38,7 +39,7 @@ class LoginedDrawerScreen extends Component {
     return (
       <LoginedDrawer.Navigator>
         <LoginedDrawer.Screen name="Homepage" component={MainMenuTabScreen} />
-        <LoginedDrawer.Screen name="Profile" component={ProfileScreen} />
+        <LoginedDrawer.Screen name="Profile" component={ProfileStackScreen} />
         <LoginedDrawer.Screen
           name="Order History"
           component={OrderHistoryStackScreen}
@@ -63,10 +64,10 @@ class ProfileStackScreen extends Component {
   render() {
     return (
       <ProfileStack.Navigator>
-        <ProfileStack.Screen name="Profile" component={ProfileScreen} />
+        <ProfileStack.Screen options={{headerShown:false}} name="viewProfile" component={viewProfile} />
         <ProfileStack.Screen
-          name="Change Password"
-          component={ChangePasswordScreen}
+          name="editProfile"
+          component={editProfile}
         />
       </ProfileStack.Navigator>
     );
