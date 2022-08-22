@@ -6,7 +6,7 @@ import {
 import { CartStyles } from './CartStyles.js';
 
 export function TwoRadioButtons(props) {
-	const [checked, setChecked] = React.useState('');
+	const [checked, setChecked] = React.useState(props.selected); // TODO need props.option ?
 
 	return (
 		<View>
