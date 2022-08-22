@@ -1,12 +1,22 @@
-import React from 'react';
-import { Text, View, Pressable, Image, StyleSheet } from 'react-native';
+import {
+    Text, 
+    View
+} from 'react-native';
+import { CartStyles } from './CartStyles.js';
 import { menuData } from '../MenuData.js';
+
+/*
+	props:
+	foodIndex
+	onQuantityChange
+	quantity
+ */
 
 function PlusButton(props) {
 	/* props of Pressable will be inherit by PlusButton */
 	return(
 		<Pressable {...props}>
-			<Image source={require('./plusIcon.jpg')} style={styles.icon} />
+			<Image source={require('./plusIcon.jpg')} />
 		</Pressable>
 	);
 }
@@ -14,84 +24,37 @@ function PlusButton(props) {
 function MinusButton(props) {
 	return(
 		<Pressable {...props}>
-			<Image source={require('./minusIcon.png')} style={styles.icon}/>
+			<Image source={require('./minusIcon.png')} />
 		</Pressable>
 	);
 }
-
-/** 
- * @memberof screen.CartScreen 
- * @requires menuData information of the food, array of objects
- * 
- * @property {Number} props.foodIndex
- * @property {Function(Number)} props.onQuantityChang
- */
 
 export function CartItem(props) {
     let item = menuData[props.foodIndex];
 
 	function goToFoodDetailsPage(foodIndex) {
-		// props.navigation.navigate('Food Details', {
-		// 	index: propsfoodIndex
-		// });
+		this.props.navigation.navigate('Food Details', {
+			index: propsfoodIndex
+		});
 	}
 
     return(
-        <View style={styles.container}>
-			<Pressable 
-				onPress={() => goToFoodDetailsPage(props.foodIndex)}
-				style={styles.item}
-			>
-				<Image source={item.image} style={styles.image}/>
-			</Pressable>
-			<View style={styles.label}>
-				<Text>{item.name}</Text>
-				<Text>{`RM ${item.price.toFixed(2)}`}</Text>
-				
-				<View style={styles.modifyQuantity}>
-					<MinusButton onPress={() => props.onQuantityChange(props.quantity - 1)} /> 
-					<Text style={styles.quantity}>{props.quantity}</Text>
-					<PlusButton onPress={() => props.onQuantityChange(props.quantity + 1)} />			
+        <View>
+			<Pressable onPress={() => goToFoodDetailsPage(props.foodIndex)}>
+				<Image source={item.image} />
+				<View>
+					<Text>{item.name}</Text>
+					<Text>{item.price}</Text>
 				</View>
+			</Pressable>
+
+			<View>
+				<MinusButton onPress={() => props.onQuantityChange(props.quantity - 1)} /> 
+				<Text>{props.quantity}</Text>
+				<PlusButton onPress={() => props.onQuantityChange(props.quantity + 1)} />			
 			</View>
         </View>
     );
 }
 
-const styles = StyleSheet.create({
-	container: {
-		display:'flex',
-		flexDirection:'row',
-		backgroundColor: 'rgb(230, 230, 230)',
-		marginBottom: 10,
-	},
-	item: {
-		display:'flex',
-		flexDirection:'row',
-	},
-	label: {
-		fontSize: 16,
-		marginLeft: 10,
-		marginTop: 5,
-	},
-	image: {
-		width: 170,
-  		height: 100,
-		marginLeft: 0
-	},
-	icon: {
-		width: 25,
-   		height: 25,
-	},
-	modifyQuantity: {
-		marginTop: 5,
-		display:'flex',
-		flexDirection:'row',
-		backgroundColor: 'white',
-		width: 80,
-	},
-	quantity: {
-		fontSize: 17,
-		paddingHorizontal: 10,
-	}
-});
+// TODO layout
