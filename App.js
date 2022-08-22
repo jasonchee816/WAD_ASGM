@@ -1,3 +1,18 @@
+/**
+ * @author 		Group 9
+ * @author
+ * @author
+ * @author
+ * @author
+ * @author		Yang Chu Yan 2005912
+ * 
+ * @description This system aims to digitalize the food ordering process. 
+ *				The customer will have to create an account for the app. 
+ *				The customer can view the digital menu and make order, 
+ * 				but they will have to pay at the counter. 
+ * 				The cusotmer can view his/her order history.
+ */
+
 import React, {Component} from 'react';
 import {StyleSheet, Button, Text, View, Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
@@ -99,7 +114,18 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      aState: 0,
+		email: '', // Accessed by login screen, change password screen, cart screen
+		password: '', // Accessed by login screen, change password screen
+		cartItems: [
+			{
+				foodIndex: 0,
+				quantity: 1
+			},
+			{
+				foodIndex: 1,
+				quantity: 2
+			}
+		], // Accessed by menu screen and cart screen
     };
     // console.log('[+] <FirstScreen> constructor() invoked');
   }
