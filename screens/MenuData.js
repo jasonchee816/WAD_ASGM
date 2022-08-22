@@ -1,4 +1,3 @@
-// menuData[1].price
 export const menuData = [
     {
         category: 'salad',
@@ -273,4 +272,5 @@ export const menuData = [
         price:'RM 18.00',
         image: require('../images/milleCrepe.png'),
     },
+>>>>>>> 5a180742df374a9415614b5ce479faeec124942a
 ];

@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, {Component, useState} from 'react';
 import {
   Text,
   View,
@@ -9,56 +9,49 @@ import {
   TextInput,
   FlatList,
   Dimensions,
-} from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import categories from '../consist/categories';
-import foods from '../screens/MenuData';
+} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
+// import categories from '../consist/categories';
+import MenuData from './MenuData';
 
 const MenuScreen = () => {
-  const MenuCard = ({ item }) => {
+  const MenuCard = ({item}) => {
     return (
       <ScrollView contentContainerStyle={styles.menuCard}>
-        <Image source={item.image} style={{ height: 80, width: 90 }} />
-        <View style={{
-          height: 100,
-          marginLeft: 10,
-          paddingVertical: 20,
-          flex: 1,
-        }}>
-          <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{item.name}</Text>
-          <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{item.price}</Text>
+        <Image source={item.image} style={{height: 80, width: 90}} />
+        <View
+          style={{
+            height: 100,
+            marginLeft: 10,
+            paddingVertical: 20,
+            flex: 1,
+          }}>
+          <Text style={{fontWeight: 'bold', fontSize: 16}}>{item.name}</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 16}}>{item.price}</Text>
         </View>
       </ScrollView>
     );
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <View style={styles.header}>
-
-      </View>
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <View style={styles.header}></View>
       <FlatList
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 80 }}
+        contentContainerStyle={{paddingBottom: 80}}
         data={MenuData}
-        renderItem={({ item }) => <MenuCard item={item} />}
+        renderItem={({item}) => <MenuCard item={item} />}
       />
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const HomeScreen = () => {
-  return (
-    <MenuScreen />
-
-  )
-}
-
+  return <MenuScreen />;
+};
 
 const styles = StyleSheet.create({
-  header: {
-
-  },
+  header: {},
   categoriesListContainer: {
     paddingVertical: 30,
     alignItems: 'center',
