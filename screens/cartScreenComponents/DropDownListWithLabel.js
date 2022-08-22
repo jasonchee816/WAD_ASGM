@@ -20,7 +20,7 @@ export function DropDownListWithLabel(props) {
 		<Picker.Item key={num} label={num.toString()} value={num}/>
 	);
 
-	const [tableNo, setTableNo] = React.useState();
+	const [tableNo, setTableNo] = React.useState(props.tableNo);
 
 	return(
 		<View>
