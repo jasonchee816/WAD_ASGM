@@ -1,5 +1,5 @@
 // menuData[1].price
-export const menuData = [
+const menuData = [
     {
         category: 'salad',
         name: 'Radish Green Salad',
@@ -274,3 +274,4 @@ export const menuData = [
         image: require('../images/milleCrepe.png'),
     },
 ];
+export default menuData;
