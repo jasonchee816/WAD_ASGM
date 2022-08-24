@@ -53,15 +53,15 @@ export default class ProfileScreen extends Component {
         return (
 
             <ScrollView style={styles.container}>
-                <View style={{ paddingBottom: 50, }}>
+                <View style={{ paddingBottom: 50}}>
                     <InputWithLabel
                         textLabelStyle={styles.TextLabel}
                         textInputStyle={styles.TextInput}
                         label={'Email: '}
                         value={this.state.email}
                         orientation={'Horizontal'}
-                        editable={false}>
-                    </InputWithLabel>
+                        editable={false}
+                    />
 
                     <InputWithLabel
                         textLabelStyle={styles.TextLabel}
@@ -69,10 +69,9 @@ export default class ProfileScreen extends Component {
                         label={'Password: '}
                         value={this.state.password}
                         orientation={'Horizontal'}
-                        editable={false}>
-                    </InputWithLabel>
+                        editable={false}
+                    />
                 </View>
-
 
                 <TouchableOpacity activeOpacity={0.8} onPress={() => { this.props.navigation.navigate('editProfile', { refresh: this._readUser }) }
                 }>
@@ -97,14 +96,13 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: 'bold',
         color: 'black',
-
+        marginLeft: 10,
     },
-
     TextInput: {
-        fontSize: 20,
-        color: 'pink',
-        lineHeight: 22,
-        marginTop: 10,
+        fontSize: 22,
+        marginTop: 5,
+        marginLeft: 10,
+        color: 'gray',
     },
 
     buttonTitle: {

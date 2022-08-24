@@ -6,8 +6,10 @@ import {
     TextInput,
     TouchableNativeFeedback,
     StyleSheet,
+    TouchableOpacity,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 /**
  * InputWithLabel
@@ -135,9 +137,43 @@ class PickerWithLabel extends Component {
 
 const inputStyles = StyleSheet.create({
     container: {
-        height: 100,
+        flex: 1,
     },
 });
+
+/**
+ * BackButton
+ */
+ class BackButton extends Component {
+    constructor(props) {
+        super(props);
+        this.title = this.props.title
+    }
+    render() {
+        return (
+            <TouchableOpacity activeOpacity={0.8}>
+                <View style={styles.header}>
+                    <Ionicons name='chevron-back-circle' size={40} color='pink' onPress={this.props.onPress}/>
+                    <Text style={styles.detailsTitleStyle}>{this.title}</Text>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+}
+
+const styles = StyleSheet.create({
+    header: {
+        paddingVertical: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginHorizontal: 20,
+    },
+    detailsTitleStyle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+});
+
 
 /**
  * Export modules
@@ -146,4 +182,5 @@ module.exports = {
     InputWithLabel: InputWithLabel,
     AppButton: AppButton,
     PickerWithLabel: PickerWithLabel,
+    BackButton: BackButton,
 };

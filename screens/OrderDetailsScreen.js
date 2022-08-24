@@ -9,17 +9,16 @@ import {
   StatusBar,
   StyleSheet,
   FlatList,
-  Switch,
-  TouchableNativeFeedback,
+  TouchableHighlight,
   Alert,
   Image,
 } from 'react-native';
 import {MenuData} from '../screens/test';
-import {InputWithLabel} from '../UI';
+import {InputWithLabel, BackButton} from '../UI';
 
 let config = require('../Config');
 
-export default class OrderDetailsScreen extends Component<Props> {
+export default class OrderDetailsScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -60,7 +59,8 @@ export default class OrderDetailsScreen extends Component<Props> {
     console.log(this.state.order_items);
     // console.log(this.state.food_info);
     return (
-      <View style={{flex: 1, margin: 5}}>
+      <View style={{flex: 1}}>
+        <BackButton title="Order Details" onPress={this.props.navigation.goBack}/>
         <FlatList
           refreshing={this.state.isFetching}
           onRefresh={this._load}
@@ -68,40 +68,29 @@ export default class OrderDetailsScreen extends Component<Props> {
           renderItem={({item}) => {
             let total = Number(item.quantity) * Number(item.price);
             return (
-              <TouchableNativeFeedback>
+              <TouchableHighlight>
                 <View
-                  style={{
-                    borderBottomWidth: 1,
-                    borderBottomColor: 'grey',
-                  }}>
+                  style={styles.orderDetailsCard}>
                   <InputWithLabel
                     label={item.item_name}
                     // orientation={'horizontal'}
-                    textLabelStyle={{fontSize: 20}}
-                    textInputStyle={{
-                      fontSize: 20,
-                    }}
+                    textLabelStyle={styles.label}
+                    textInputStyle={styles.input}
                     value={'Price per item: RM' + item.price}
-                    editable={false}></InputWithLabel>
+                    editable={false}/>
                   <InputWithLabel
                     label={'x' + item.quantity}
                     // orientation={'horizontal'}
-                    textLabelStyle={{fontSize: 20}}
-                    textInputStyle={{
-                      fontSize: 20,
-                      textAlign: 'right',
-                      fontWeight: 'bold',
-                      padding: 9,
-                      paddingBottom: 12,
-                    }}
+                    textLabelStyle={styles.label}
+                    textInputStyle={styles.inputPrice}
                     value={'RM' + total}
-                    editable={false}></InputWithLabel>
+                    editable={false}/>
                 </View>
-              </TouchableNativeFeedback>
+              </TouchableHighlight>
             );
           }}></FlatList>
 
-        <Text>{'Total:' + this.props.route.params.total_price}</Text>
+        <Text style={styles.totalPriceStyle}>{'Total: RM ' + this.props.route.params.total_price}</Text>
       </View>
     );
   }
@@ -120,13 +109,39 @@ export default class OrderDetailsScreen extends Component<Props> {
 }
 
 const styles = StyleSheet.create({
+  orderDetailsCard: {
+    height: 150,
+    elevation: 5,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    marginVertical: 10,
+    marginHorizontal: 20,
+    paddingHorizontal: 10,
+    alignContent: 'center',
+  },
   label: {
     fontWeight: 'bold',
-    color: 'darkblue',
-    fontSize: 15,
+    color: 'black',
+    fontSize: 20,
   },
 
   input: {
-    color: 'black',
+    fontSize: 20,
+    color: 'gray',
+  },
+  inputPrice: {
+    fontSize: 20,
+    color: 'gray',
+    textAlign: 'right',
+  },
+  totalPriceStyle: {
+    backgroundColor: 'pink',
+    color: 'white',
+    fontSize: 22,
+    fontWeight: 'bold',
+    elevation: 25,
+    borderRadius: 10,
+    padding: 15,
+    textAlign: 'right',
   },
 });
