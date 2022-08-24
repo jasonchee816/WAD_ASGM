@@ -72,7 +72,19 @@ export default class FoodDetailScreen extends Component {
 
             </View>
 
-            <TouchableOpacity activeOpacity={0.8} onPress={this.props.navigation.goBack}>
+            <TouchableOpacity 
+              activeOpacity={0.8} 
+              onPress={() => {
+                // cartItems={this.state.cartItems}
+                // quantity = this.state.quantity
+                // foodIndex = item.id
+                // let cartItem = this.props.route.params.item.id
+                // this.setState({
+                //   foodIndex: this.state.cartItems[cartItem].foodIndex,
+                //   quantity: this.state.cartItems[cartItem].quantity
+                // })
+                this.props.navigation.goBack
+              }}>
               <View style={styles.btnContainer}>
                 <Text style={styles.buttonTitle}>Add To Cart</Text>
               </View>
