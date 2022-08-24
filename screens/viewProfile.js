@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Button } from 'react-native';
+import { StyleSheet, ScrollView, View, TouchableOpacity, Text } from 'react-native';
 import { InputWithLabel } from '../UI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -53,29 +53,35 @@ export default class ProfileScreen extends Component {
         return (
 
             <ScrollView style={styles.container}>
-                <View>
-                    <InputWithLabel style={styles.input}
-                        label={'Email'}
+                <View style={{ paddingBottom: 50, }}>
+                    <InputWithLabel
+                        textLabelStyle={styles.TextLabel}
+                        textInputStyle={styles.TextInput}
+                        label={'Email: '}
                         value={this.state.email}
-                        orientation={'vertical'}
+                        orientation={'Horizontal'}
                         editable={false}>
                     </InputWithLabel>
 
-                    <InputWithLabel style={styles.input}
-                        label={'Password'}
+                    <InputWithLabel
+                        textLabelStyle={styles.TextLabel}
+                        textInputStyle={styles.TextInput}
+                        label={'Password: '}
                         value={this.state.password}
-                        orientation={'vertical'}
+                        orientation={'Horizontal'}
                         editable={false}>
                     </InputWithLabel>
-
-                    <Button
-                        title="Change Password"
-                        onPress={() => {this.props.navigation.navigate('editProfile', {refresh : this._readUser})}
-                        }
-                        
-                    ></Button>
-
                 </View>
+
+
+                <TouchableOpacity activeOpacity={0.8} onPress={() => { this.props.navigation.navigate('editProfile', { refresh: this._readUser }) }
+                }>
+                    <View style={styles.btnContainer}>
+                        <Text style={styles.buttonTitle}>Edit Profile</Text>
+                    </View>
+                </TouchableOpacity>
+
+
             </ScrollView>
         );
     }
@@ -84,29 +90,34 @@ export default class ProfileScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        padding: 20,
     },
-    switchContainer: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        height: 60,
+
+    TextLabel: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        color: 'black',
+
     },
-    switchLabel: {
-        flex: 4,
+
+    TextInput: {
         fontSize: 20,
-        margin: 10,
+        color: 'pink',
+        lineHeight: 22,
+        marginTop: 10,
     },
-    switch: {
-        flex: 1,
-        margin: 10,
+
+    buttonTitle: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 18
     },
-    pickerContainer: {
-        flexDirection: 'column',
+    btnContainer: {
+        backgroundColor: 'pink',
+        height: 50,
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    pickerLabel: {
-        fontSize: 20,
-        margin: 10,
-    },
-    picker: {
-        margin: 10,
-    },
+
 });
