@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {BackButton} from '../UI';
 
 export default class FoodDetailScreen extends Component {
   constructor(props) {
@@ -35,13 +36,10 @@ export default class FoodDetailScreen extends Component {
     const item = this.props.route.params;
     return (
       <SafeAreaView style={{ backgroundColor: 'white' }}>
-      <View style={styles.header}>
-        <Ionicons name='chevron-back-circle' size={40} color='pink' onPress={this.props.navigation.goBack} />
-        <Text style={styles.detailsTitleStyle}> Details</Text>
-      </View>
+      <BackButton title="Details" onPress={this.props.navigation.goBack}/>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.menuDetailImageContainer}>
-          <Image source={item.image} style={{ height: 220, width: 220 }} />
+          <Image source={item.image} style={styles.image} />
         </View>
         <View style={styles.detailsContainer}>
           <View style={styles.menuDetailNameContainer}>
@@ -51,7 +49,6 @@ export default class FoodDetailScreen extends Component {
 
           {/* Button Container */}
           <View style={styles.AddToCartButtonContainer}>
-
             <View style={styles.addButton}>
               <Ionicons
                 name="remove"
@@ -69,11 +66,10 @@ export default class FoodDetailScreen extends Component {
                   onPress={this.addOne}
                 />
               </View>
-
             </View>
 
-            <TouchableOpacity 
-              activeOpacity={0.8} 
+            <TouchableOpacity
+              activeOpacity={0.8}
               onPress={() => {
                 // cartItems={this.state.cartItems}
                 // quantity = this.state.quantity
@@ -96,13 +92,8 @@ export default class FoodDetailScreen extends Component {
     )
   }
 }
+
 const styles = StyleSheet.create({
-  header: {
-    paddingVertical: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 20,
-  },
   detailsTitleStyle: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -124,6 +115,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  image: {
+    height: 220,
+     width: 220,
   },
   name: {
     fontSize: 25,

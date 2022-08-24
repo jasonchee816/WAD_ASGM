@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -8,14 +8,14 @@ import {
   StyleSheet,
   FlatList,
   Switch,
-  TouchableNativeFeedback,
+  TouchableHighlight,
   Alert,
 } from 'react-native';
-import {InputWithLabel} from '../UI';
+import { InputWithLabel } from '../UI';
 
 let config = require('../Config');
 
-export default class OrderHistoryScreen extends Component<Props> {
+export default class OrderHistoryScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -27,7 +27,7 @@ export default class OrderHistoryScreen extends Component<Props> {
 
   _load() {
     let url = config.settings.serverPath + '/api/orders/' + 3;
-    this.setState({isFetching: true});
+    this.setState({ isFetching: true });
     fetch(url)
       .then(response => {
         console.log(response);
@@ -35,11 +35,11 @@ export default class OrderHistoryScreen extends Component<Props> {
           Alert.alert('Error:', response.status.toString());
           throw Error('Error ' + response.status);
         }
-        this.setState({isFetching: false});
+        this.setState({ isFetching: false });
         return response.json();
       })
       .then(orders => {
-        this.setState({orders: orders});
+        this.setState({ orders: orders });
       })
       .catch(error => {
         console.log(error);
@@ -52,31 +52,28 @@ export default class OrderHistoryScreen extends Component<Props> {
 
   render() {
     return (
-      <View style={{flex: 1, margin: 5}}>
+      <View style={styles.container}>
         <FlatList
           refreshing={this.state.isFetching}
           onRefresh={this._load}
           data={this.state.orders}
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             return (
-              <TouchableNativeFeedback
+              <TouchableHighlight
+                underlayColor='pink'
                 onPress={() =>
                   this.props.navigation.navigate('Order Details', item)
                 }>
-                <View style={{borderBottomWidth: 1, borderBottomColor: 'grey'}}>
+                <View style={styles.orderCard}>
                   <InputWithLabel
                     label={item.order_datetime}
                     // orientation={'horizontal'}
-                    textLabelStyle={{fontSize: 20}}
-                    textInputStyle={{
-                      fontSize: 20,
-                      fontWeight: 'bold',
-                      textAlign: 'right',
-                    }}
-                    value={'Amount: RM' + item.total_price}
-                    editable={false}></InputWithLabel>
+                    textLabelStyle={styles.TextLabel}
+                    textInputStyle={styles.TextInput}
+                    value={'Amount: RM ' + item.total_price}
+                    editable={false}/>
                 </View>
-              </TouchableNativeFeedback>
+              </TouchableHighlight>
             );
           }}></FlatList>
       </View>
@@ -95,3 +92,31 @@ export default class OrderHistoryScreen extends Component<Props> {
   //   );
   // }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1, 
+    margin: 5,
+  },
+  orderCard: {
+    height: 100,
+    elevation: 5,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    marginVertical: 10,
+    marginHorizontal: 20,
+    paddingHorizontal: 10,
+  },
+  TextLabel: {
+    marginTop: 5,
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  TextInput: {
+    fontSize: 20,
+    marginTop: 10,
+    color: 'gray',
+    textAlign: 'right',
+  },
+})

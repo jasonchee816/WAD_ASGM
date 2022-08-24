@@ -81,10 +81,7 @@ class ProfileStackScreen extends Component {
     return (
       <ProfileStack.Navigator>
         <ProfileStack.Screen options={{headerShown:false}} name="viewProfile" component={viewProfile} />
-        <ProfileStack.Screen
-          name="editProfile"
-          component={editProfile}
-        />
+        <ProfileStack.Screen options={{headerShown:false}} name="editProfile" component={editProfile}/>
       </ProfileStack.Navigator>
     );
   }

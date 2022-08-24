@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, TouchableOpacity, Text, Alert } from 'react-native';
-import { InputWithLabel } from '../UI';
+import { InputWithLabel, BackButton } from '../UI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { TouchableHighlight } from 'react-native-gesture-handler';
 
 export default class ProfileScreen extends Component {
     constructor(props) {
@@ -81,8 +79,8 @@ export default class ProfileScreen extends Component {
         console.log(this.state.email)
         console.log(this.state.password)
         return (
-
             <ScrollView>
+                <BackButton title="Edit Profile" onPress={this.props.navigation.goBack}/>
                 <View style={styles.container}>
                     <InputWithLabel
                         textLabelStyle={styles.TextLabel}
@@ -109,56 +107,49 @@ export default class ProfileScreen extends Component {
                         multiline={false}
                         orientation={'vertical'}>
                     </InputWithLabel>
-                    </View>
-
-                    <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity activeOpacity={0.8} onPress={() => { this.props.navigation.goBack() }
-                          } style={{padding: 20}}>
-                            <View style={styles.btnContainer}>
-                                <Text style={styles.buttonTitle}>Back</Text>
-                            </View>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity activeOpacity={0.5} onPress={this._alert_message} style={{padding: 20}}
-                        >
-                            <View style={styles.btnContainer}>
-                                <Text style={styles.buttonTitle}>Save</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                
+                </View>
+                    <TouchableOpacity activeOpacity={0.5} onPress={this._alert_message} style={{ padding: 20 }}
+                    >
+                        <View style={styles.btnContainer}>
+                            <Text style={styles.buttonTitle}>Save</Text>
+                        </View>
+                    </TouchableOpacity>
             </ScrollView >
         );
     }
 }
 
-
-
 const styles = StyleSheet.create({
+    header: {
+        paddingVertical: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginHorizontal: 20,
+    },
+    detailsTitleStyle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
     TextLabel: {
         fontSize: 25,
         fontWeight: 'bold',
         color: 'black',
-
+        marginLeft: 10,
     },
 
     TextInput: {
-        fontSize: 20,
-        color: 'pink',
-        lineHeight: 22,
-        marginTop: 10,
+        fontSize: 22,
+        marginTop: 5,
+        marginLeft: 10,
     },
-
     buttonTitle: {
         color: 'white',
         fontWeight: 'bold',
         fontSize: 18
     },
-
     btnContainer: {
         backgroundColor: 'pink',
         height: 50,
-        width: 150,
         borderRadius: 30,
         justifyContent: 'center',
         alignItems: 'center',
