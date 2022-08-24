@@ -82,7 +82,7 @@ export default class ProfileScreen extends Component {
     render() {
         return (
             <ScrollView>
-                <BackButton title="Edit Profile" onPress={this.props.navigation.goBack}/>
+                <BackButton title="  Edit Profile" onPress={this.props.navigation.goBack}/>
                 <View style={styles.container}>
                     <InputWithLabel
                         textLabelStyle={styles.TextLabel}
@@ -111,14 +111,13 @@ export default class ProfileScreen extends Component {
                     </InputWithLabel>
                     </View>
 
-                    <View style={{ flexDirection: 'row' }}>
 
                         <TouchableOpacity activeOpacity={0.5} onPress={this._alert_message} style={{padding: 20}}>
                             <View style={styles.btnContainer}>
                                 <Text style={styles.buttonTitle}>Save</Text>
                             </View>
                         </TouchableOpacity>
-                    </View>
+
                 
             </ScrollView >
         );

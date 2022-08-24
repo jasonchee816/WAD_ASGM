@@ -51,7 +51,7 @@ export default class FoodDetailScreen extends Component {
       [this.state.item_id, this.state.quantity])
     })
     this.props.navigation.goBack();
-    // console.log(this.state.item_id, this.state.quantity)
+    console.log(this.state.item_id, this.state.quantity)
   }
 
   openDb() {
