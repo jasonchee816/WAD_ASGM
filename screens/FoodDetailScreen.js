@@ -10,17 +10,30 @@ import {
 import { ScrollView } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {BackButton} from '../UI';
+let SQLite = require('react-native-sqlite-storage');
 
 export default class FoodDetailScreen extends Component {
   constructor(props) {
     super(props);
+    const item = this.props.route.params;
     this.state = {
+      item_id: item.id,
       quantity: '1',
     }
+    this.db = SQLite.openDatabase(
+      {name: 'cartdb', createFromLocation: '~db.sqlite'},
+      this.openDb,
+      this.errorDb,
+    )
     this.addOne = this.addOne.bind(this);
     this.removeOne = this.removeOne.bind(this);
+    this._insert = this._insert.bind(this);
   }
-  
+
+  componentDidMount(){
+    this.props.navigation.setOptions({headerTitle: this.state.item_id})
+  }
+
   addOne = () =>{
     this.setState({
       quantity: (Number(this.state.quantity) + Number(1)).toString(),
@@ -30,8 +43,25 @@ export default class FoodDetailScreen extends Component {
     this.setState({
       quantity: Math.max((Number(this.state.quantity) - Number(1)).toString(), 0),
     })
-
   }
+
+  _insert() {
+    this.db.transaction(tx => {
+      tx.executeSql('INSERT INTO cart_items(item_id, quantity) VALUES (?,?)',
+      [this.state.item_id, this.state.quantity])
+    })
+    this.props.navigation.goBack();
+    // console.log(this.state.item_id, this.state.quantity)
+  }
+
+  openDb() {
+    console.log('Database opened successfully!')
+  }
+
+  closeDb() {
+    console.log('SQL Error: ' + err)
+  }
+
   render() {
     const item = this.props.route.params;
     return (
@@ -70,17 +100,7 @@ export default class FoodDetailScreen extends Component {
 
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => {
-                // cartItems={this.state.cartItems}
-                // quantity = this.state.quantity
-                // foodIndex = item.id
-                // let cartItem = this.props.route.params.item.id
-                // this.setState({
-                //   foodIndex: this.state.cartItems[cartItem].foodIndex,
-                //   quantity: this.state.cartItems[cartItem].quantity
-                // })
-                this.props.navigation.goBack
-              }}>
+              onPress={this._insert}>
               <View style={styles.btnContainer}>
                 <Text style={styles.buttonTitle}>Add To Cart</Text>
               </View>

@@ -9,10 +9,7 @@ export default class MainMenuScreen extends Component {
       <TouchableHighlight
         underlayColor='pink'
         onPress={() => {
-          this.props.navigation.navigate('Food Details', item
-            // this.setState({currentItem: this.state.item})
-            // headerTitle: item.name,
-          );
+          this.props.navigation.navigate('Food Details', item);
         }}>
       <ScrollView contentContainerStyle={styles.menuCard}>
         <Image source={item.image} style={styles.image} />
