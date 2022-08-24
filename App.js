@@ -31,6 +31,7 @@ import OrderHistoryScreen from './screens/OrderHistoryScreen';
 import ChangePasswordScreen from './screens/ChangePasswordScreen';
 import OrderDetailsScreen from './screens/OrderDetailsScreen';
 import FoodDetailScreen from './screens/FoodDetailScreen';
+import ResetPasswordScreen  from './screens/ResetPasswordScreen';
 
 const MainStack = createStackNavigator();
 const NotLoginedStack = createStackNavigator();
@@ -45,6 +46,10 @@ class NotLoginedStackScreen extends Component {
       <NotLoginedStack.Navigator>
         <NotLoginedStack.Screen name="Login" component={LoginScreen} />
         <NotLoginedStack.Screen name="Sign Up" component={SignUpScreen} />
+        <NotLoginedStack.Screen
+            name="ResetPasswordScreen"
+            component={ResetPasswordScreen}
+          />
       </NotLoginedStack.Navigator>
     );
   }
@@ -79,9 +84,10 @@ class MainMenuTabScreen extends Component {
 class ProfileStackScreen extends Component {
   render() {
     return (
-      <ProfileStack.Navigator>
+      <ProfileStack.Navigator  initialRouteName="viewProfile">
         <ProfileStack.Screen options={{headerShown:false}} name="viewProfile" component={viewProfile} />
         <ProfileStack.Screen
+          options={{headerShown:false}}
           name="editProfile"
           component={editProfile}
         />

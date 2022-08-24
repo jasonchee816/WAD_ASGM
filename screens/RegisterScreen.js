@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Text } from 'react-native-paper';
+import React, {Component} from 'react';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text} from 'react-native-paper';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import BackButton from '../components/BackButton';
-import { theme } from '../core/theme';
-import { checkEmailValidity } from '../helpers/checkEmailValidity';
-import { passwordValidator } from '../helpers/passwordValidator';
+import {theme} from '../core/theme';
+import {checkEmailValidity} from '../helpers/checkEmailValidity';
+import {passwordValidator} from '../helpers/passwordValidator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class RegisterScreen extends Component {
@@ -28,8 +28,6 @@ export default class RegisterScreen extends Component {
     };
     this.onSignUpPressed = this.onSignUpPressed.bind(this);
   }
-
-
   // error control on name, email and password
   onSignUpPressed = async () => {
     // if validator got pass the parameter insdie
@@ -39,27 +37,25 @@ export default class RegisterScreen extends Component {
       this.state.password.value2,
     );
     if (emailError || passwordError) {
-      let newEmail = { ...this.state.email, error: emailError };
-      this.setState({ email: newEmail });
+      let newEmail = {...this.state.email, error: emailError};
+      this.setState({email: newEmail});
 
-      let newPassword = { ...this.state.password, error: passwordError };
-      this.setState({ password: newPassword });
+      let newPassword = {...this.state.password, error: passwordError};
+      this.setState({password: newPassword});
       return;
     } else {
-      this._saveSetting('email', this.state.email.value.toString());
-      this._saveSetting('password', this.state.password.value.toString());
+      try {
+        var user = {
+          Email: this.state.email.value,
+          Password: this.state.email.password,
+        };
+        await AsyncStorage.setItem('UserData', JSON.stringify(user));
+        this.props.navigation.navigate('LoginScreen');
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
-
-  async _saveSetting(key, value) {
-    try {
-      await AsyncStorage.setItem(key, value);
-    } catch (error) {
-      console.log('## ERROR SAVING ITEM ##: ', error);
-    }
-    this.props.navigation.navigate('Login');
-  }
-
   render() {
     return (
       <Background>
@@ -71,8 +67,8 @@ export default class RegisterScreen extends Component {
           returnKeyType="next"
           value={this.state.email.value}
           onChangeText={text => {
-            let newEmail = { ...this.state.email, value: text };
-            this.setState({ email: newEmail });
+            let newEmail = {...this.state.email, value: text};
+            this.setState({email: newEmail});
           }}
           error={!!this.state.email.error}
           errorText={this.state.email.error}
@@ -86,8 +82,8 @@ export default class RegisterScreen extends Component {
           returnKeyType="done"
           value={this.state.password.value}
           onChangeText={text => {
-            let newPassword = { ...this.state.password, value: text };
-            this.setState({ password: newPassword });
+            let newPassword = {...this.state.password, value: text};
+            this.setState({password: newPassword});
           }}
           error={!!this.state.password.error}
           errorText={this.state.password.error}
@@ -98,8 +94,8 @@ export default class RegisterScreen extends Component {
           returnKeyType="done"
           value={this.state.password.value2}
           onChangeText={text => {
-            let newPassword2 = { ...this.state.password, value2: text };
-            this.setState({ password: newPassword2 });
+            let newPassword2 = {...this.state.password, value2: text};
+            this.setState({password: newPassword2});
           }}
           error={!!this.state.password.error}
           errorText={this.state.password.error}
@@ -108,13 +104,13 @@ export default class RegisterScreen extends Component {
         <Button
           mode="contained"
           onPress={this.onSignUpPressed}
-          style={{ marginTop: 24 }}>
+          style={{marginTop: 24}}>
           Sign Up
         </Button>
         <View style={styles.row}>
           <Text>Already have an account? </Text>
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Login')}>
+            onPress={() => this.props.navigation.replace('LoginScreen')}>
             <Text style={styles.link}>Login</Text>
           </TouchableOpacity>
         </View>

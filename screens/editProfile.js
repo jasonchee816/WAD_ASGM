@@ -2,17 +2,18 @@ import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, TouchableOpacity, Text, Alert } from 'react-native';
 import { InputWithLabel } from '../UI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import {checkEmailValidity} from '../helpers/checkEmailValidity';
+import {LoginValidator} from '../helpers/LoginValidator';
 
 export default class ProfileScreen extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            email: '',
+            async_password: '',
             password: '',
-        }
+            newPassword: '',
+        };
         this._readUser = this._readUser.bind(this);
     }
 
@@ -25,8 +26,7 @@ export default class ProfileScreen extends Component {
             'Confirm to edit ?', "Press Yes or No", [
             {
                 text: 'Yes', onPress: () => {
-                    this._saveSetting('email', this.state.email.toString());
-                    this._saveSetting('password', this.state.password.toString());
+                    this._deleteSetting('password');
                 }
             },
 
@@ -49,28 +49,30 @@ export default class ProfileScreen extends Component {
         this.props.navigation.navigate('viewProfile', { refresh: this._readUser });
     }
 
+    // _validate_pwd(){
+    //     if(this.state.password == this.state.async_password){
+    //         this._alert_message
+    //     }else{
+    //         Alert.alert('Error Message', 'Old Password is not match!!!' )
+    //     }
+    // }
+
+    async _deleteSetting(){
+        try{
+            await AsyncStorage.removeItem('password');
+            this._saveSetting('password', this.state.newPassword.toString());
+        }catch(error){
+            console.log('## ERROR DELETING ITEM##: ', error)
+        }
+    }
+
     async _readUser() {
 
         try {
-            let keys = await AsyncStorage.multiGet(
-                ['email', 'password'],
-                (err, stores) => {
-                    console.log(stores)
-                    stores.map((result, i, store) => {
-                        let key = store[i][0];
-                        let value = store[i][1];
-                        if (['email', 'password'].indexOf(key) != -1) {
-                            if (key == 'email') {
-                                this.setState({ email: value })
-                            }
-                            else if (key == 'password') {
-                                this.setState({ password: value })
-                            }
-                        }
-                    },
-                    );
-                }
-            )
+            let async_password = await AsyncStorage.getItem('password');
+            if(async_password !== null){
+                this.setState({aync_password: async_password})
+            }
         } catch (error) {
             console.log('## ERROR READING ITEMS ##: ', error);
         }
@@ -78,22 +80,18 @@ export default class ProfileScreen extends Component {
 
 
     render() {
-        console.log(this.state.email)
-        console.log(this.state.password)
         return (
-
             <ScrollView>
                 <View style={styles.container}>
                     <InputWithLabel
                         textLabelStyle={styles.TextLabel}
                         textInputStyle={styles.TextInput}
-                        label={'Email'}
-                        onChangeText={(email) => {
-                            this.setState({ email });
-
+                        label={'Old Password'}
+                        onChangeText={text => {
+                            this.setState({ password: text });
                         }}
-                        value={this.state.email}
-                        multiline={false}
+                        value={this.state.password}
+                        secureTextEntry
                         orientation={'vertical'}>
                     </InputWithLabel>
 
@@ -101,11 +99,12 @@ export default class ProfileScreen extends Component {
                         textLabelStyle={styles.TextLabel}
                         textInputStyle={styles.TextInput}
                         label={'Password'}
-                        onChangeText={(password) => {
-                            this.setState({ password });
-
+                        onChangeText={text => {
+                            this.setState({ newPassword: text });
                         }}
-                        value={this.state.password}
+                        value={this.state.newPassword}
+                        // ***
+                        secureTextEntry
                         multiline={false}
                         orientation={'vertical'}>
                     </InputWithLabel>
@@ -119,8 +118,7 @@ export default class ProfileScreen extends Component {
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity activeOpacity={0.5} onPress={this._alert_message} style={{padding: 20}}
-                        >
+                        <TouchableOpacity activeOpacity={0.5} onPress={this._alert_message} style={{padding: 20}}>
                             <View style={styles.btnContainer}>
                                 <Text style={styles.buttonTitle}>Save</Text>
                             </View>
