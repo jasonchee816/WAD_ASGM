@@ -19,17 +19,14 @@ export function DropDownListWithLabel(props) {
 		<Picker.Item key={num} label={num.toString()} value={num} style={styles.pickerItem}/>
 	);
 
-	const [tableNo, setTableNo] = React.useState(props.tableNo);
-
 	return(
 		<View style={styles.container}>
 			<Text style={styles.label}>{props.label}</Text>
 			<Picker 
 				style={styles.picker}
-				selectedValue={tableNo}
+				selectedValue={props.selected}
 				onValueChange={(input) => {
 					props.onChange(input); // pass the value to the parent component
-					setTableNo(input); // reflect the changes in UI
 				}} 
 			>
 				{pickerItems}
@@ -53,7 +50,7 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 	picker: {
-		width: 90,
+		width: 100,
 		
 		backgroundColor: 'rgb(220, 220, 220)',
 	},

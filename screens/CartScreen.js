@@ -4,7 +4,7 @@ import { Button, Text, View, Alert, FlatList, StyleSheet } from 'react-native';
 import { TwoRadioButtons } from './cartScreenComponents/TwoRadioButtons.js';
 import { CartItem } from './cartScreenComponents/CartItem.js';
 import { DropDownListWithLabel } from './cartScreenComponents/DropDownListWithLabel.js';
-import { menuData } from './MenuData.js';
+import { AllMenu } from './AllMenu.js';
 
 /**
  * @class 	display cart items, 
@@ -15,38 +15,66 @@ import { menuData } from './MenuData.js';
  * 
  * @requires menuData information of the food, array of objects
  * 
- * @property {Object[]} this.props.cartItems
- * @property {Number} this.props.cartItems[i].foodIndex the index in menuData
- * @property {Number} this.props.cartItems[i].quantity the number of item wants to order
- * 
- * @property {Function(Object[]): void} this.props.onCartItemChange callback function, parameter is updated CartItems
-
-	this.props.cartItems = [
-		{
-			foodIndex:
-			quantity:
-		},
-	];
+ * @property {Object[]} this.state.cartItems
+ * @property {Number} this.state.cartItems[i].item_id the index in menuData
+ * @property {Number} this.state.cartItems[i].quantity the number of item wants to order
  */
+	
+let SQLite = require('react-native-sqlite-storage');
 
 export class CartScreen extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			tableNo: 1,
-			dineInOrTakeaway: ''
+			dineInOrTakeaway: '',
+			cartItems: [],
 		};
+
+		this._setQuantityFromDatabase = this._setQuantityFromDatabase.bind(this);
+		this._deleteItemFromDatabase = this._deleteItemFromDatabase.bind(this);
+
+		this.db = SQLite.openDatabase(
+			{name: 'studentdb', createFromLocation: '~db.sqlite'},
+			() => console.log('database open success'),
+			() => console.log('Error in opening the database: ' + err),
+		);
+	}
+
+	componentDidMount() {
+		this.db.transaction(tx =>
+			tx.executeSql('SELECT * FROM cart_items', [], (tx, results) =>
+			  this.setState({cartItems: results.rows.raw()}),
+			),
+		);
+	}
+
+	_setQuantityFromDatabase(id, quantity) {
+		this.db.transaction(tx => tx.executeSql('UPDATE food SET quantity=? WHERE id = ?', [quantity, id]));
+	}
+
+	_deleteItemFromDatabase(id) {
+		this.db.transaction(tx => tx.executeSql('DELETE FROM food WHERE id = ?', [id]));
 	}
 
 	/** @return {String} total price with 2 decimal place */
     calculateTotalPrice = () => {
         let totalPrice = 0;
-        for (let item of this.props.cartItems) 
-       		totalPrice += menuData[item.foodIndex].price * item.quantity;
+        for (let item of this.state.cartItems) 
+       		totalPrice += AllMenu[item.item_id].price * item.quantity;
         return totalPrice.toFixed(2);
     }
 
     makeOrder = () => {
+		// email
+		// datetime
+		// table no
+		// dine in or takeaway
+		// order id
+		// cart items
+
+		// clear cart item
+
         // if (dineInOrTakeaway.length > 0) { // Check all the info have been filled in
 
         //     // TODO: create an order and save it to database            
@@ -78,7 +106,7 @@ export class CartScreen extends Component {
 	renderCartItem = (item, index) => {
 		return(
 			<CartItem 
-				foodIndex={item.foodIndex} 
+				item_id={item.item_id} 
 				quantity={item.quantity} 
 				onQuantityChange={(newQuantity) => {
 					if (newQuantity <= 0) {
@@ -94,19 +122,21 @@ export class CartScreen extends Component {
 							  	{ 
 									text: "Yes", 
 							  		onPress: () => {
-										let newCartItems = this.props.cartItems.slice();
+										let newCartItems = this.state.cartItems.slice();
 										newCartItems.splice(index, 1); // Remove 1 element
 										console.log(newCartItems);
-										this.props.onCartItemsChange(newCartItems);
+										this.setState({cartItems: newCartItems});
+										this._deleteItemFromDatabase(item.item_id);
 									  }
 								}
 							]
 						  );
 					} else {
 						// Modify the quantity
-						let newCartItems = this.props.cartItems.slice(); // Copy the array
+						let newCartItems = this.state.cartItems.slice(); // Copy the array
 						newCartItems[index].quantity = newQuantity;
-						this.props.onCartItemsChange(newCartItems);
+						this.setState({cartItems: newCartItems});
+						this._setQuantityFromDatabase(item.item_id, newQuantity);
 					}					
 				}}
 			/>
@@ -114,10 +144,13 @@ export class CartScreen extends Component {
 	}
 
 	render() {
-		if (!this.props.cartItems || this.props.cartItems.length <= 0) 
-			return <Text style={styles.blankContainer}>No item in your cart.</Text>;
+		// console.log(AllMenu[0]);
+		// // console.log(AllMenu);
 
-		// below the FlatList component
+		if (!this.state.cartItems || this.state.cartItems.length <= 0) 
+			return <Text style={styles.blankContainer}>No item in your cart.</Text>; // TODO: test that the screen will turn to this when remove all the items from cart
+
+		// below FlatList component
 		let footerComponent = () => (
 			<View>
 				<DropDownListWithLabel 
@@ -142,12 +175,12 @@ export class CartScreen extends Component {
 			</View>
 		);
 
-		return (
+		return(
 			<View style={styles.container}>
 				<FlatList 
-					data={this.props.cartItems} 
+					data={this.state.cartItems} 
 					renderItem={({ item, index }) => this.renderCartItem(item, index)} 
-					keyExtractor={item => item.foodIndex} 
+					keyExtractor={item => item.item_id} 
 					ListFooterComponent={footerComponent}
 				/>
 			</View>

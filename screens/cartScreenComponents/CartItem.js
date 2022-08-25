@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, Pressable, Image, StyleSheet } from 'react-native';
-import { menuData } from '../MenuData.js';
+import { AllMenu } from '../AllMenu.js';
 
 function PlusButton(props) {
 	/* props of Pressable will be inherit by PlusButton */
@@ -23,23 +23,23 @@ function MinusButton(props) {
  * @memberof screen.CartScreen 
  * @requires menuData information of the food, array of objects
  * 
- * @property {Number} props.foodIndex
+ * @property {Number} props.item_id
  * @property {Function(Number)} props.onQuantityChang
  */
 
 export function CartItem(props) {
-    let item = menuData[props.foodIndex];
+    let item = AllMenu[props.item_id];
 
-	function goToFoodDetailsPage(foodIndex) {
+	function goToFoodDetailsPage(item_id) {
 		// props.navigation.navigate('Food Details', {
-		// 	index: propsfoodIndex
+		// 	index: propsitem_id
 		// });
 	}
 
     return(
         <View style={styles.container}>
 			<Pressable 
-				onPress={() => goToFoodDetailsPage(props.foodIndex)}
+				onPress={() => goToFoodDetailsPage(props.item_id)}
 				style={styles.item}
 			>
 				<Image source={item.image} style={styles.image}/>
