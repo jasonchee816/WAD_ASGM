@@ -21,6 +21,7 @@ export default class MainMenuScreen extends Component {
       </TouchableHighlight>
     );
   };
+  
   render(){
     return(
       <SafeAreaView style={styles.container}>

@@ -1,6 +1,13 @@
 import sqlite3
 db = sqlite3.connect('LMEO.sqlite')
 
+db.execute('''create table IF NOT EXISTS cart_items (
+  user_id INTEGER NOT NULL,
+  item_id integer NOT NULL,
+  quantity integer not null
+);''')
+
+
 db.execute('DROP TABLE IF EXISTS members')
 db.execute('DROP TABLE IF EXISTS orders')
 db.execute('DROP TABLE IF EXISTS order_item')
@@ -27,6 +34,19 @@ db.execute('''CREATE TABLE order_item(
 )''')
 
 cursor = db.cursor()
+
+cursor.execute(''' insert into cart_items (user_id, item_id, quantity)
+VALUES(3, 1, 2)
+''')
+
+cursor.execute(''' insert into cart_items (user_id, item_id, quantity)
+VALUES(3, 3, 3);
+''')
+
+cursor.execute(''' insert into cart_items (user_id, item_id, quantity)
+VALUES(3, 18,1);
+''')
+
 
 cursor.execute('''
     INSERT INTO members(email,password)

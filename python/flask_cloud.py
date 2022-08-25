@@ -24,6 +24,14 @@ def get_items_row_as_dict(row):
 
     return row_dict
 
+def get_cart_row_as_dict(row):
+    row_dict = {
+        'item_id': row[0],
+        'quantity': row[1],
+    }
+
+    return row_dict
+
 def get_member_as_dict(row):
     row_dict = {
         'user_id': row[0],
@@ -150,6 +158,24 @@ def getOrderDetail(order_id):
     else: 
         return jsonify(None), 200
 
+@app.route('/api/cart/<int:user_id>', methods=['GET'])
+def getCartDetail(user_id):
+    db = sqlite3.connect(DB)
+    cursor = db.cursor()
+    cursor.execute('SELECT item_id, quantity FROM cart_items WHERE user_id=?', (str(user_id),))
+    rows = cursor.fetchall()
+    db.close()
+
+    if rows:
+        rows_as_dict = []
+        for row in rows:
+            row_as_dict = get_cart_row_as_dict(row)
+            rows_as_dict.append(row_as_dict)
+        return jsonify(rows_as_dict), 200
+    else: 
+        return jsonify(None), 200
+
+
 @app.route('/api/orders', methods=['POST'])
 def add_order():
     if not request.json:
@@ -182,7 +208,37 @@ def add_order():
 
     return jsonify(response), 201
 
+@app.route('/api/addCart', methods=['POST'])
+def add_cart():
+    if not request.json:
+        abort(404)
 
+    new_cart = (
+        request.json['user_id'],
+        request.json['item_id'],
+        request.json['quantity'],
+    )
+
+    db = sqlite3.connect(DB)
+    cursor = db.cursor()
+
+    cursor.execute('''
+        INSERT INTO cart_items(user_id, item_id, quantity)
+        VALUES(?,?,?)
+    ''', new_cart)
+
+    item_id = cursor.lastrowid
+
+    db.commit()
+
+    response = {
+        'id': item_id,
+        'affected': db.total_changes,
+    }
+
+    db.close()
+
+    return jsonify(response), 201
 # @app.route('/api/members/<int:member>', methods=['PUT'])
 # def update(member):
 #     if not request.json:

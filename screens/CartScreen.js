@@ -5,6 +5,7 @@ import { TwoRadioButtons } from '../components/cartScreenComponents/TwoRadioButt
 import { CartItem } from '../components/cartScreenComponents/CartItem.js';
 import { DropDownListWithLabel } from '../components/cartScreenComponents/DropDownListWithLabel.js';
 import { AllMenu } from './AllMenu.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /**
  * @class 	display cart items, 
@@ -19,34 +20,67 @@ import { AllMenu } from './AllMenu.js';
  * @property {Number} this.state.cartItems[i].item_id the index in menuData
  * @property {Number} this.state.cartItems[i].quantity the number of item wants to order
  */
-	
+
 let SQLite = require('react-native-sqlite-storage');
+let config = require('../Config');
 
 export default class CartScreen extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			user_id: '',
 			tableNo: 1,
 			dineInOrTakeaway: '',
 			cartItems: [],
 		};
-
+		
 		this._setQuantityFromDatabase = this._setQuantityFromDatabase.bind(this);
 		this._deleteItemFromDatabase = this._deleteItemFromDatabase.bind(this);
 
-		this.db = SQLite.openDatabase(
-			{name: 'studentdb', createFromLocation: '~db.sqlite'},
-			() => console.log('database open success'),
-			() => console.log('Error in opening the database: ' + err),
-		);
+		this._load = this._load.bind(this);
+		this._readSettings = this._readSettings.bind(this);
 	}
 
 	componentDidMount() {
-		this.db.transaction(tx =>
-			tx.executeSql('SELECT * FROM cart_items', [], (tx, results) =>
-			  this.setState({cartItems: results.rows.raw()}),
-			),
-		);
+		this._readSettings();
+		
+		
+	}
+
+	_load() {
+		let id = this.state.user_id-0;
+		let url = config.settings.serverPath + '/api/cart/' + id;
+		// this.setState({ isFetching: true });
+		fetch(url)
+		  .then(response => {
+			console.log(response);
+			if (!response.ok) {
+			  Alert.alert('Error:', response.status.toString());
+			  throw Error('Error ' + response.status);
+			}
+			// this.setState({ isFetching: false });
+			return response.json();
+		  })
+		  .then(cartItems => {
+			this.setState({ cartItems: cartItems });
+		  })
+		  .catch(error => {
+			console.log(error);
+		  });
+	  }
+
+	async _readSettings() {
+		try {
+			let id = await AsyncStorage.getItem('user_id');
+			if (id !== null) {
+				console.log(parseInt(id))
+				this.setState({ user_id: id });
+				this._load();
+			}
+		} catch (error) {
+			console.log('## ERROR READING ITEM ##: ', error);
+		}
+		
 	}
 
 	_setQuantityFromDatabase(id, quantity) {
@@ -58,14 +92,14 @@ export default class CartScreen extends Component {
 	}
 
 	/** @return {String} total price with 2 decimal place */
-    calculateTotalPrice = () => {
-        let totalPrice = 0;
-        for (let item of this.state.cartItems) 
-       		totalPrice += AllMenu[item.item_id].price * item.quantity;
-        return totalPrice.toFixed(2);
-    }
+	calculateTotalPrice = () => {
+		let totalPrice = 0;
+		for (let item of this.state.cartItems)
+			totalPrice += AllMenu[item.item_id].price * item.quantity;
+		return totalPrice.toFixed(2);
+	}
 
-    makeOrder = () => {
+	makeOrder = () => {
 		// email
 		// datetime
 		// table no
@@ -75,9 +109,9 @@ export default class CartScreen extends Component {
 
 		// clear cart item
 
-        // if (dineInOrTakeaway.length > 0) { // Check all the info have been filled in
+		// if (dineInOrTakeaway.length > 0) { // Check all the info have been filled in
 
-        //     // TODO: create an order and save it to database            
+		//     // TODO: create an order and save it to database            
 		// 	let newOrder = {
 		// 		dateTime: new Date(),
 		// 		tableNo: 
@@ -98,16 +132,17 @@ export default class CartScreen extends Component {
 		// 		Avoid passing the full data which will be displayed on the screen itself (e.g. pass a user id instead of user object). 
 		// 		Also avoid passing data which is used by multiple screens, such data should be in a global store.
 		// 	*/
-        // } else
-        //     ToastAndroid.show("Please fill in all the details.");       
-    }
+		// } else
+		//     ToastAndroid.show("Please fill in all the details.");       
+	}
 
 	/** to be called by FlatList */
 	renderCartItem = (item, index) => {
-		return(
-			<CartItem 
-				item_id={item.item_id} 
-				quantity={item.quantity} 
+		console.log(this.state.cartItems)
+		return (
+			<CartItem
+				item_id={item.item_id}
+				quantity={item.quantity}
 				onQuantityChange={(newQuantity) => {
 					if (newQuantity <= 0) {
 						// Ask to remove
@@ -118,29 +153,29 @@ export default class CartScreen extends Component {
 								{
 									text: "No",
 									style: "cancel"
-							  	},
-							  	{ 
-									text: "Yes", 
-							  		onPress: () => {
+								},
+								{
+									text: "Yes",
+									onPress: () => {
 										let newCartItems = this.state.cartItems.slice();
 										newCartItems.splice(index, 1); // Remove 1 element
 										console.log(newCartItems);
-										this.setState({cartItems: newCartItems});
+										this.setState({ cartItems: newCartItems });
 										this._deleteItemFromDatabase(item.item_id);
-									  }
+									}
 								}
 							]
-						  );
+						);
 					} else {
 						// Modify the quantity
 						let newCartItems = this.state.cartItems.slice(); // Copy the array
 						newCartItems[index].quantity = newQuantity;
-						this.setState({cartItems: newCartItems});
+						this.setState({ cartItems: newCartItems });
 						this._setQuantityFromDatabase(item.item_id, newQuantity);
-					}					
+					}
 				}}
 			/>
-		);		
+		);
 	}
 
 	render() {
@@ -153,29 +188,29 @@ export default class CartScreen extends Component {
 		// below FlatList component
 		let footerComponent = () => (
 			<View>
-				<DropDownListWithLabel 
+				<DropDownListWithLabel
 					selected={this.state.tableNo}
-					label="Table no." 
-					onChange={(no) => this.setState({tableNo: no})} 
-					min={1} 
-					max={30} 
-				/> 
-				<TwoRadioButtons 
+					label="Table no."
+					onChange={(no) => this.setState({ tableNo: no })}
+					min={1}
+					max={30}
+				/>
+				<TwoRadioButtons
 					selected={this.state.dineInOrTakeaway}
-					options={['Dine In', 'Takeaway']} 
-					onChange={(option) => this.setState({dineInOrTakeaway: option})} 
+					options={['Dine In', 'Takeaway']}
+					onChange={(option) => this.setState({ dineInOrTakeaway: option })}
 				/>
 				<Text style={styles.totalPrice}	>
 					{`Total RM${this.calculateTotalPrice()}`}
-				</Text> 
-				<Button 
-					onPress={this.makeOrder} 
-					title={'Order'} 
+				</Text>
+				<Button
+					onPress={this.makeOrder}
+					title={'Order'}
 				/>
 			</View>
 		);
 
-		return(
+		return (
 			<View style={styles.container}>
 				<FlatList 
 					data={this.state.cartItems} 
@@ -184,6 +219,7 @@ export default class CartScreen extends Component {
 					ListFooterComponent={footerComponent}
 				/>
 			</View>
+			
 		);
 		// function with (): call this when rendering
 		// function without (): call this when onPress

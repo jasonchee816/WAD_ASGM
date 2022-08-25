@@ -6,12 +6,15 @@ import {
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {BackButton} from '../UI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 let SQLite = require('react-native-sqlite-storage');
+
+let config = require('../Config');
 
 export default class FoodDetailScreen extends Component {
   constructor(props) {
@@ -30,7 +33,6 @@ export default class FoodDetailScreen extends Component {
     this._readSettings = this._readSettings.bind(this);
     this.addOne = this.addOne.bind(this);
     this.removeOne = this.removeOne.bind(this);
-    this._insert = this._insert.bind(this);
   }
 
   componentDidMount(){
@@ -60,14 +62,52 @@ export default class FoodDetailScreen extends Component {
     }
   }
 
-  _insert() {
-    this.db.transaction(tx => {
-      tx.executeSql('INSERT INTO cart_items(user_id, item_id, quantity) VALUES (?,?,?)',
-      [this.state.user_id, this.state.item_id, this.state.quantity])
+  // _insert() {
+  //   this.db.transaction(tx => {
+  //     tx.executeSql('INSERT INTO cart_items(user_id, item_id, quantity) VALUES (?,?,?)',
+  //     [this.state.user_id, this.state.item_id, this.state.quantity])
+  //   })
+  //   this.props.navigation.goBack();
+  //   console.log(this.state.user_id, this.state.item_id, this.state.quantity)
+  // }
+
+  _save = async () => {
+    let url = config.settings.serverPath + '/api/addCart';
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: this.state.user_id,
+        item_id: this.state.item_id,
+        quantity: this.state.quantity,
+      }),
     })
-    this.props.navigation.goBack();
-    console.log(this.state.user_id, this.state.item_id, this.state.quantity)
-  }
+      .then(response => {
+        if (!response.ok) {
+          Alert.alert('Error Requesting');
+          throw Error('Error ' + response.status);
+        }
+
+        return response.json();
+      })
+      
+      .then(respondJson => {
+        if (respondJson.affected > 0) {
+          Alert.alert('Item is added successfully.', this.state.item_id);
+        } else {
+          Alert.alert('Error in SAVING');
+        }
+        // this.props.route.params._refresh();
+        this.props.navigation.goBack();
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
   openDb() {
     console.log('Database opened successfully!')
@@ -115,7 +155,7 @@ export default class FoodDetailScreen extends Component {
 
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={this._insert}>
+              onPress={this._save}>
               <View style={styles.btnContainer}>
                 <Text style={styles.buttonTitle}>Add To Cart</Text>
               </View>
