@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, Pressable, Image, StyleSheet } from 'react-native';
-import { AllMenu } from '../AllMenu.js';
+import { AllMenu } from '../../screens/AllMenu.js';
 
 function PlusButton(props) {
 	/* props of Pressable will be inherit by PlusButton */

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Button, Text, View, Alert, FlatList, StyleSheet } from 'react-native';
 
-import { TwoRadioButtons } from './cartScreenComponents/TwoRadioButtons.js';
-import { CartItem } from './cartScreenComponents/CartItem.js';
-import { DropDownListWithLabel } from './cartScreenComponents/DropDownListWithLabel.js';
+import { TwoRadioButtons } from '../components/cartScreenComponents/TwoRadioButtons.js';
+import { CartItem } from '../components/cartScreenComponents/CartItem.js';
+import { DropDownListWithLabel } from '../components/cartScreenComponents/DropDownListWithLabel.js';
 import { AllMenu } from './AllMenu.js';
 
 /**
