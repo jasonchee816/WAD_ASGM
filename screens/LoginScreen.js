@@ -1,89 +1,121 @@
 import React, {Component} from 'react';
-import {
-  StyleSheet,
-  Button,
-  Text,
-  View,
-  TouchableHighlight,
-  Alert,
-} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {TouchableOpacity, StyleSheet, View, navigation} from 'react-native';
+import {Text} from 'react-native-paper';
+import Background from '../components/Background';
+import Logo from '../components/Logo';
+import Header from '../components/Header';
+import Button from '../components/Button';
+import TextInput from '../components/TextInput';
+import BackButton from '../components/BackButton';
+import {theme} from '../core/theme';
+import {checkEmailValidity} from '../helpers/checkEmailValidity';
+import {LoginValidator} from '../helpers/LoginValidator';
 
-const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
-
-export default class LoginScreen extends Component<Props> {
-  static navigationOptions = {
-    title: 'First Screen',
-  };
-
+export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      aState: 0,
+      email: {
+        value: '',
+        error: '',
+      },
+      password: {
+        value: '',
+        error: '',
+      },
     };
-    console.log('[+] <FirstScreen> constructor() invoked');
+    this.onLoginPressed = this.onLoginPressed.bind(this);
   }
+  
+  onLoginPressed() {
+    const emailError = checkEmailValidity(this.state.email.value);
+    const passwordError = LoginValidator(this.state.password.value);
+    if (emailError || passwordError) {
+      let newEmail = {...this.state.email, error: emailError};
+      this.setState({email: newEmail});
 
-  componentDidMount() {
-    console.log('[+] <FirstScreen> componentDidMount() invoked');
-  }
-  componentDidUpdate() {
-    console.log('[+] <FirstScreen> componentDidUpdate() invoked');
-  }
-  componentWillUnmount() {
-    console.log('[+] <FirstScreen> componentWillUnmount() invoked');
+      let newPassword = {...this.state.email, error: passwordError};
+      this.setState({password: newPassword});
+      return;
+    }
+    this.props.navigation.navigate('Logined');
   }
   render() {
-    console.log('[+] <FirstScreen> render() invoked');
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>First Screen</Text>
-        <View style={styles.button}>
-          <Button
-            title="Go to Second Screen"
-            onPress={() => {
-              this.props.navigation.navigate('Sign Up');
-            }}
-          />
+      <Background>
+        {/* Move back to the previous stack */}
+        <BackButton goBack={this.props.navigation.goBack} />
+        <Logo />
+        <Header>Welcome back.</Header>
+        <TextInput
+          label="Email"
+          returnKeyType="next"
+          value={this.state.email.value}
+          onChangeText={text => {
+            let newEmail = {...this.state.email, value: text};
+            this.setState({email: newEmail});
+          }}
+          //cast to boolean
+          error={!!this.state.email.error}
+          errorText={this.state.email.error}
+          autoCapitalize="none"
+          //let the keyboard know what r u typing
+          autoCompleteType="email"
+          textContentType="emailAddress"
+          //determine which keyboard to pen
+          keyboardType="email-address"
+        />
+        <TextInput
+          label="Password"
+          returnKeyType="done"
+          value={this.state.password.value}
+          onChangeText={text => {
+            let newPassword = {...this.state.password, value: text};
+            this.setState({password: newPassword});
+          }}
+          error={!!this.state.password.error}
+          errorText={this.state.password.error}
+          // ***
+          secureTextEntry
+        />
+        <View style={styles.forgotPassword}>
+          {/* lower the opacity */}
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('ResetPasswordScreen')}>
+            <Text style={styles.forgot}>Forgot your password?</Text>
+          </TouchableOpacity>
         </View>
-        <Text style={styles.title}>{this.state.aState}</Text>
-        <View style={styles.button}>
-          <Button
-            title="Update State"
-            onPress={() => {
-              this.setState({
-                aState: this.state.aState + 1,
-              });
-            }}
-          />
+        <Button mode="contained" onPress={this.onLoginPressed}>
+          Login
+        </Button>
+        <View style={styles.row}>
+          <Text>Don’t have an account? </Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('Sign Up')}>
+            <Text style={styles.link}>Sign up</Text>
+          </TouchableOpacity>
         </View>
-
-        <TouchableHighlight
-          onPress={() => this.props.navigation.navigate('Logined')}>
-          <View>
-            <Text>Press Me</Text>
-          </View>
-        </TouchableHighlight>
-      </View>
+      </Background>
     );
   }
 }
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+  forgotPassword: {
+    width: '100%',
+    alignItems: 'flex-end',
+    marginBottom: 24,
   },
-  title: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 20,
+  row: {
+    flexDirection: 'row',
+    marginTop: 4,
   },
-  button: {
-    margin: 10,
+  forgot: {
+    fontSize: 13,
+    color: theme.colors.secondary,
+  },
+  link: {
+    fontWeight: 'bold',
+    color: theme.colors.primary,
   },
 });

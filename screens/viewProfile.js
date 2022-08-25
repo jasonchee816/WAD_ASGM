@@ -69,6 +69,7 @@ export default class ProfileScreen extends Component {
                         label={'Password: '}
                         value={this.state.password}
                         orientation={'Horizontal'}
+                        secureTextEntry
                         editable={false}
                     />
                 </View>

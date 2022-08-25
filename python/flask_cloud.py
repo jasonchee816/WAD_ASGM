@@ -32,6 +32,8 @@ def get_member_as_dict(row):
 
     return row_dict
 
+    
+
 
 app = Flask(__name__)
 
@@ -52,6 +54,30 @@ def checkMemberValid():
     else:
         return jsonify(None), 200
 
+
+@app.route('/api/memberCP', methods=['PUT'])
+def changePassword():
+
+    if not request.json:
+        abort(404)
+
+    member_info = (
+        request.json['password'],
+        request.json['user_id'],   
+    )
+
+    db = sqlite3.connect(DB)
+    cursor = db.cursor()
+    cursor.execute('UPDATE members SET password = ? WHERE user_id =?', member_info)
+
+    
+    db.commit()
+    response = {
+        'affected': db.total_changes,
+    }
+    db.close()
+
+    return jsonify(response), 201
 
 
 @app.route('/api/orders/<int:member>', methods=['GET'])
