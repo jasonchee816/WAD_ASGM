@@ -12,6 +12,7 @@ import {
   Alert,
 } from 'react-native';
 import { InputWithLabel } from '../UI';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 let config = require('../Config');
 
@@ -19,14 +20,17 @@ export default class OrderHistoryScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      id: '',
       orders: [],
       isFetching: false,
     };
     this._load = this._load.bind(this);
+    this._readSettings = this._readSettings.bind(this);
   }
 
   _load() {
-    let url = config.settings.serverPath + '/api/orders/' + 3;
+    let user_id = Number(this.state.id);
+    let url = config.settings.serverPath + '/api/orders/' + user_id;
     this.setState({ isFetching: true });
     fetch(url)
       .then(response => {
@@ -48,6 +52,18 @@ export default class OrderHistoryScreen extends Component {
 
   componentDidMount() {
     this._load();
+    this._readSettings();
+  }
+
+  async _readSettings() {
+    try {
+      let user_id = await AsyncStorage.getItem('user_id');
+      if (user_id !== null) {
+        this.setState({id: user_id});
+      }
+    } catch (error) {
+      console.log('## ERROR READING ITEM ##: ', error);
+    }
   }
 
   render() {

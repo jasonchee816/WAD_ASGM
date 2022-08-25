@@ -22,7 +22,7 @@ import { AllMenu } from './AllMenu.js';
 	
 let SQLite = require('react-native-sqlite-storage');
 
-export class CartScreen extends Component {
+export default class CartScreen extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {

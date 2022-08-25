@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {Text} from 'react-native-paper';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
@@ -11,6 +11,7 @@ import {theme} from '../core/theme';
 import {checkEmailValidity} from '../helpers/checkEmailValidity';
 import {passwordValidator} from '../helpers/passwordValidator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+let config = require('../Config');
 
 export default class RegisterScreen extends Component {
   constructor(props) {
@@ -27,6 +28,8 @@ export default class RegisterScreen extends Component {
       },
     };
     this.onSignUpPressed = this.onSignUpPressed.bind(this);
+    // this._CheckExistingMember = this._CheckExistingMember.bind(this);
+    this._InsertIntoMember = this._InsertIntoMember.bind(this);
   }
   // error control on name, email and password
   onSignUpPressed = async () => {
@@ -43,19 +46,77 @@ export default class RegisterScreen extends Component {
       let newPassword = {...this.state.password, error: passwordError};
       this.setState({password: newPassword});
       return;
-    } else {
-      try {
-        var user = {
-          Email: this.state.email.value,
-          Password: this.state.email.password,
-        };
-        await AsyncStorage.setItem('UserData', JSON.stringify(user));
-        this.props.navigation.navigate('LoginScreen');
-      } catch (error) {
-        console.log(error);
-      }
     }
+    this._InsertIntoMember();
   };
+  // _CheckExistingMember() {
+  //   let url = config.settings.serverPath + '/api/Checkmember';
+
+  //   fetch(url, {
+  //     method: 'POST',
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       email: this.state.email.value,
+  //     }),
+  //   })
+  //     .then(response => {
+  //       console.log(response.json());
+  //       if (Object.keys(response.json()).length > 0) {
+  //         Alert.alert('Existing acc detected');
+  //         this.props.navigation.navigate('LoginScreen');
+  //         throw Error('Error ' + response.status);
+  //       } else {
+  //         this._InsertIntoMember();
+  //         Alert.alert('Account Successfully Created!');
+  //       }
+  //     })
+
+  //     .catch(error => {
+  //       console.log(error);
+  //     });
+  // }
+
+  _InsertIntoMember() {
+    let url = config.settings.serverPath + '/api/Insertmember';
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: this.state.email.value,
+        password: this.state.password.value,
+      }),
+    })
+      .then(response => {
+        console.log(response);
+        if (!response.ok) {
+          Alert.alert('Error when inserting data!');
+          throw Error('Error ' + response.status);
+        }
+        return response.json();
+      })
+      .then(respondJson => {
+        if (respondJson.affected > 0) {
+          Alert.alert(
+            'Account succussfully created for ',
+            this.state.email.value,
+          );
+        } else {
+          Alert.alert('Error in SAVING');
+        }
+        // this.props.route.params._refresh();
+        this.props.navigation.navigate('Login');
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
   render() {
     return (
       <Background>
@@ -110,7 +171,7 @@ export default class RegisterScreen extends Component {
         <View style={styles.row}>
           <Text>Already have an account? </Text>
           <TouchableOpacity
-            onPress={() => this.props.navigation.replace('LoginScreen')}>
+            onPress={() => this.props.navigation.navigate('Login')}>
             <Text style={styles.link}>Login</Text>
           </TouchableOpacity>
         </View>

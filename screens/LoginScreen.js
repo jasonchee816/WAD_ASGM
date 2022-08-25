@@ -1,5 +1,11 @@
 import React, {Component} from 'react';
-import {TouchableOpacity, StyleSheet, View, navigation} from 'react-native';
+import {
+  TouchableOpacity,
+  StyleSheet,
+  View,
+  navigation,
+  Alert,
+} from 'react-native';
 import {Text} from 'react-native-paper';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
@@ -10,6 +16,8 @@ import BackButton from '../components/BackButton';
 import {theme} from '../core/theme';
 import {checkEmailValidity} from '../helpers/checkEmailValidity';
 import {LoginValidator} from '../helpers/LoginValidator';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+let config = require('../Config');
 
 export default class LoginScreen extends Component {
   constructor(props) {
@@ -23,10 +31,11 @@ export default class LoginScreen extends Component {
         value: '',
         error: '',
       },
+      user_id: '',
     };
     this.onLoginPressed = this.onLoginPressed.bind(this);
+    this._save = this._save.bind(this);
   }
-  
   onLoginPressed() {
     const emailError = checkEmailValidity(this.state.email.value);
     const passwordError = LoginValidator(this.state.password.value);
@@ -38,8 +47,55 @@ export default class LoginScreen extends Component {
       this.setState({password: newPassword});
       return;
     }
-    this.props.navigation.navigate('Logined');
+    this._save();
   }
+  async_saveSettings = async () => {
+    try {
+      await AsyncStorage.multiSet([
+        ['email', this.state.email.value.toString()],
+        ['password', this.state.password.value.toString()],
+        ['user_id', this.state.user_id.toString()],
+      ]);
+    } catch (error) {
+      console.log('## ERROR SAVING EMAIL ##: ', error);
+    }
+  };
+  _save = async () => {
+    let url = config.settings.serverPath + '/api/member';
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: this.state.email.value,
+        password: this.state.password.value,
+      }),
+    })
+      .then(response => {
+        if (!response.ok) {
+          Alert.alert('Error Requesting');
+          throw Error('Error ' + response.status);
+        }
+
+        return response.json();
+      })
+      .then(respondJson => {
+        if (respondJson === null) {
+          Alert.alert('Email or Password Wrong!');
+        } else {
+          this.setState({user_id: respondJson.user_id});
+          this.async_saveSettings();
+          this.props.navigation.navigate('Logined');
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        return false;
+      });
+  };
   render() {
     return (
       <Background>
@@ -81,7 +137,7 @@ export default class LoginScreen extends Component {
         <View style={styles.forgotPassword}>
           {/* lower the opacity */}
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('ResetPasswordScreen')}>
+            onPress={() => navigation.navigate('ResetPasswordScreen')}>
             <Text style={styles.forgot}>Forgot your password?</Text>
           </TouchableOpacity>
         </View>
@@ -91,7 +147,7 @@ export default class LoginScreen extends Component {
         <View style={styles.row}>
           <Text>Don’t have an account? </Text>
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Sign Up')}>
+            onPress={() => this.props.navigation.replace('RegisterScreen')}>
             <Text style={styles.link}>Sign up</Text>
           </TouchableOpacity>
         </View>

@@ -38,14 +38,14 @@ export default class ProfileScreen extends Component {
     async _readUser() {
         try {
             let keys = await AsyncStorage.multiGet(
-                ['id', 'password'],
+                ['user_id', 'password'],
                 (err, stores) => {
                     console.log(stores)
                     stores.map((result, i, store) => {
                         let key = store[i][0];
                         let value = store[i][1];
-                        if (['id', 'password'].indexOf(key) != -1) {
-                            if (key == 'id') {
+                        if (['user_id', 'password'].indexOf(key) != -1) {
+                            if (key == 'user_id') {
                                 this.setState({ id: value })
                             }
                             else if (key == 'password') {
@@ -123,7 +123,7 @@ export default class ProfileScreen extends Component {
         } catch (error) {
             console.log('## ERROR SAVING ITEM ##: ', error);
         }  
-        this.props.route.params.refresh();
+        // this.props.route.params.refresh();
         this._edit();
     }
 
@@ -155,7 +155,7 @@ export default class ProfileScreen extends Component {
           .then(respondJson => {
             if (respondJson.affected > 0) {
               Alert.alert('Changes Successfully.', 'Password had Saved', [{ onPress: ()=>{
-                this.props.navigation.navigate('viewProfile', { refresh: this._readUser });
+                this.props.navigation.navigate('viewProfile');
             }}]);
 
             } else {

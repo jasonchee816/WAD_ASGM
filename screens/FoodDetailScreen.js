@@ -10,6 +10,7 @@ import {
 import { ScrollView } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {BackButton} from '../UI';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 let SQLite = require('react-native-sqlite-storage');
 
 export default class FoodDetailScreen extends Component {
@@ -17,6 +18,7 @@ export default class FoodDetailScreen extends Component {
     super(props);
     const item = this.props.route.params;
     this.state = {
+      user_id: '',
       item_id: item.id,
       quantity: '1',
     }
@@ -25,12 +27,14 @@ export default class FoodDetailScreen extends Component {
       this.openDb,
       this.errorDb,
     )
+    this._readSettings = this._readSettings.bind(this);
     this.addOne = this.addOne.bind(this);
     this.removeOne = this.removeOne.bind(this);
     this._insert = this._insert.bind(this);
   }
 
   componentDidMount(){
+    this._readSettings();
     this.props.navigation.setOptions({headerTitle: this.state.item_id})
   }
 
@@ -45,13 +49,24 @@ export default class FoodDetailScreen extends Component {
     })
   }
 
+  async _readSettings() {
+    try {
+      let user_id = await AsyncStorage.getItem('user_id');
+      if (user_id !== null) {
+        this.setState({user_id: user_id});
+      }
+    } catch (error) {
+      console.log('## ERROR READING ITEM ##: ', error);
+    }
+  }
+
   _insert() {
     this.db.transaction(tx => {
-      tx.executeSql('INSERT INTO cart_items(item_id, quantity) VALUES (?,?)',
-      [this.state.item_id, this.state.quantity])
+      tx.executeSql('INSERT INTO cart_items(user_id, item_id, quantity) VALUES (?,?,?)',
+      [this.state.user_id, this.state.item_id, this.state.quantity])
     })
     this.props.navigation.goBack();
-    console.log(this.state.item_id, this.state.quantity)
+    console.log(this.state.user_id, this.state.item_id, this.state.quantity)
   }
 
   openDb() {

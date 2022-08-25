@@ -22,16 +22,14 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {TouchableHighlight} from 'react-native-gesture-handler';
 
 import LoginScreen from './screens/LoginScreen';
-import SignUpScreen from './screens/SignUpScreen';
+import RegisterScreen from './screens/RegisterScreen';
 import MainMenuScreen from './screens/MainMenuScreen';
 import CartScreen from './screens/CartScreen';
 import viewProfile from './screens/viewProfile';
 import editProfile from './screens/editProfile';
 import OrderHistoryScreen from './screens/OrderHistoryScreen';
-import ChangePasswordScreen from './screens/ChangePasswordScreen';
 import OrderDetailsScreen from './screens/OrderDetailsScreen';
 import FoodDetailScreen from './screens/FoodDetailScreen';
-import ResetPasswordScreen  from './screens/ResetPasswordScreen';
 
 const MainStack = createStackNavigator();
 const NotLoginedStack = createStackNavigator();
@@ -45,11 +43,7 @@ class NotLoginedStackScreen extends Component {
     return (
       <NotLoginedStack.Navigator>
         <NotLoginedStack.Screen name="Login" component={LoginScreen} />
-        <NotLoginedStack.Screen name="Sign Up" component={SignUpScreen} />
-        <NotLoginedStack.Screen
-            name="ResetPasswordScreen"
-            component={ResetPasswordScreen}
-          />
+        <NotLoginedStack.Screen name="RegisterScreen" component={RegisterScreen} />
       </NotLoginedStack.Navigator>
     );
   }
@@ -128,22 +122,10 @@ export default class App extends Component {
 				foodIndex: 1,
 				quantity: 2
 			}
-		], // Accessed by menu screen and cart screen
+		], 
     };
-    // console.log('[+] <FirstScreen> constructor() invoked');
   }
 
-  // componentDidMount() {
-  //   console.log('[+] <FirstScreen> componentDidMount() invoked');
-  // }
-
-  // componentDidUpdate() {
-  //   console.log('[+] <FirstScreen> componentDidUpdate() invoked');
-  // }
-
-  // componentWillUnmount() {
-  //   console.log('[+] <FirstScreen> componentWillUnmount() invoked');
-  // }
 
   render() {
     // console.log('[+] <FirstScreen> render() invoked');
@@ -161,19 +143,3 @@ export default class App extends Component {
   }
 }
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: '#F5FCFF',
-//   },
-//   title: {
-//     fontSize: 20,
-//     textAlign: 'center',
-//     margin: 20,
-//   },
-//   button: {
-//     margin: 10,
-//   },
-// });

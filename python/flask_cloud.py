@@ -37,24 +37,6 @@ def get_member_as_dict(row):
 
 app = Flask(__name__)
 
-@app.route('/api/member', methods=['GET'])
-def checkMemberValid():
-    db = sqlite3.connect(DB)
-    cursor = db.cursor()
-    args = request.args
-    email = args.get('name')
-    location = args.get('location')
-    cursor.execute('SELECT user_id, email FROM members WHERE email=? AND password =?', (str(email), str(location)))
-    row = cursor.fetchone()
-    db.close()
-
-    if row:
-        row_as_dict = get_member_as_dict(row)
-        return jsonify(row_as_dict), 200
-    else:
-        return jsonify(None), 200
-
-
 @app.route('/api/memberCP', methods=['PUT'])
 def changePassword():
 
@@ -96,6 +78,60 @@ def show(member):
         return jsonify(rows_as_dict), 200
     else: 
         return jsonify(None), 200
+
+@app.route('/api/member', methods=['POST'])
+def checkMemberValid():
+
+    if not request.json:
+        abort(404)
+
+    member_info = (
+        request.json['email'],
+        request.json['password'],
+    )
+
+    db = sqlite3.connect(DB)
+    cursor = db.cursor()
+    cursor.execute('SELECT user_id, email FROM members WHERE email=? AND password =?', member_info)
+    row = cursor.fetchone()
+    db.close()
+
+    if row:
+        row_as_dict = get_member_as_dict(row)
+        return jsonify(row_as_dict), 200
+    else:
+        return jsonify(None), 200
+
+@app.route('/api/Insertmember', methods=['POST'])
+def add_user():
+    if not request.json:
+        abort(404)
+
+    member_info = (
+        request.json['email'],
+        request.json['password'],
+    )
+
+    db = sqlite3.connect(DB)
+    cursor = db.cursor()
+
+    cursor.execute('''
+        INSERT INTO members(email, password)
+        VALUES(?,?)
+    ''', member_info)
+
+    user_id = cursor.lastrowid
+    db.commit()
+
+    response = {
+        'id': user_id,
+        'affected': db.total_changes,
+
+    }
+
+    db.close()
+
+    return jsonify(response), 201
 
 @app.route('/api/order/<int:order_id>', methods=['GET'])
 def getOrderDetail(order_id):
