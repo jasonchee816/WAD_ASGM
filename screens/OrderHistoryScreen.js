@@ -73,6 +73,11 @@ export default class OrderHistoryScreen extends Component {
   }
 
   render() {
+    if (!this.state.orders || this.state.orders.length <= 0)
+      return (
+        <Text style={styles.blankContainer}>No orders in order history.</Text>
+      );
+
     return (
       <View style={styles.container}>
         <FlatList

@@ -28,13 +28,13 @@ export default class CartScreen extends Component {
     super(props);
     this.state = {
       isFetching: false,
-	  order_id: '',
+      order_id: '',
       user_id: '',
       tableNo: 1,
       dineInOrTakeaway: '',
       cartItems: [],
     };
-	this.findItem = this.findItem.bind(this);
+    this.findItem = this.findItem.bind(this);
     this._save = this._save.bind(this);
     this._addOrderItem = this._addOrderItem.bind(this);
     this._edit = this._edit.bind(this);
@@ -220,7 +220,7 @@ export default class CartScreen extends Component {
       })
       .then(respondJson => {
         if (respondJson.affected > 0) {
-          Alert.alert('Update Succesfully');
+          console.log('Update Successfully!');
         } else {
           Alert.alert('Error in UPDATING');
         }
@@ -233,12 +233,12 @@ export default class CartScreen extends Component {
   }
 
   findItem(para_id) {
-	for (let i = 0; i < MenuData.length; i++) {
-		console.log(MenuData[i].id)
-	  if (MenuData[i].id == para_id) {
-		return MenuData[i];
-	  }
-	}
+    for (let i = 0; i < MenuData.length; i++) {
+      console.log(MenuData[i].id);
+      if (MenuData[i].id == para_id) {
+        return MenuData[i];
+      }
+    }
   }
 
   /** @return {String} total price with 2 decimal place */
@@ -296,7 +296,6 @@ export default class CartScreen extends Component {
   };
 
   render() {
-
     if (!this.state.cartItems || this.state.cartItems.length <= 0)
       return <Text style={styles.blankContainer}>No item in your cart.</Text>; // TODO: test that the screen will turn to this when remove all the items from cart
 
