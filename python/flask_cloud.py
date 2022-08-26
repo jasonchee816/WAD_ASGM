@@ -286,8 +286,6 @@ def add_cart():
     new_cart = (
         request.json['user_id'],
         request.json['item_id'],
-        request.json['item_name'],
-        request.json['price'],
         request.json['quantity'],
     )
 

@@ -104,13 +104,6 @@ export default class FoodDetailScreen extends Component {
       });
   };
 
-  openDb() {
-    console.log('Database opened successfully!')
-  }
-
-  closeDb() {
-    console.log('SQL Error: ' + err)
-  }
 
   render() {
     const item = this.props.route.params;
@@ -119,7 +112,7 @@ export default class FoodDetailScreen extends Component {
       <BackButton title="Details" onPress={this.props.navigation.goBack}/>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.menuDetailImageContainer}>
-          <Image source={item.image} style={styles.image} />
+          <Image source={{uri: item.image}} style={styles.image} />
         </View>
         <View style={styles.detailsContainer}>
           <View style={styles.menuDetailNameContainer}>
