@@ -12,7 +12,6 @@ import Logo from '../components/Logo';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import BackButton from '../components/BackButton';
 import {theme} from '../core/theme';
 import {checkEmailValidity} from '../helpers/checkEmailValidity';
 import {LoginValidator} from '../helpers/LoginValidator';
@@ -100,7 +99,7 @@ export default class LoginScreen extends Component {
     return (
       <Background>
         {/* Move back to the previous stack */}
-      
+
         <Logo />
         <Header>Welcome back.</Header>
         <TextInput

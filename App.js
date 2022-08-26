@@ -5,7 +5,7 @@
  * @author    Tong Wei Ling 1901268
  * @author    Lee Yi Tien 1904896
  * @author		Yang Chu Yan 2005912
- * 
+ *
  *
  * @description This system aims to digitalize the food ordering process.
  *				The customer will have to create an account for the app.
@@ -41,7 +41,10 @@ const OrderHistoryStack = createStackNavigator();
 class NotLoginedStackScreen extends Component {
   render() {
     return (
-      <NotLoginedStack.Navigator>
+      <NotLoginedStack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}>
         <NotLoginedStack.Screen name="Login" component={LoginScreen} />
         <NotLoginedStack.Screen
           name="RegisterScreen"
@@ -68,25 +71,32 @@ class LoginedDrawerScreen extends Component {
 }
 
 class MainMenuTabScreen extends Component {
-   render() {
-     return (
-       <MainMenuTab.Navigator>
-         <MainMenuTab.Screen 
-          name="MainMenu" 
+  render() {
+    return (
+      <MainMenuTab.Navigator>
+        <MainMenuTab.Screen
+          name="MainMenu"
           component={MainMenuScreen}
-          options ={{
-            tabBarIcon: () => {return <Ionicons name="home" size={20}/>}
-          }} />
-         <MainMenuTab.Screen name="Cart" 
-         // options={{unmountOnBlur: true}}
-         component={CartScreen} 
-         options ={{
-          tabBarIcon: () => {return <Ionicons name="cart" size={20}/>}
-        }} />
-       </MainMenuTab.Navigator>
-     );
-   }
- }
+          options={{
+            tabBarIcon: () => {
+              return <Ionicons name="home" size={20} />;
+            },
+          }}
+        />
+        <MainMenuTab.Screen
+          name="Cart"
+          // options={{unmountOnBlur: true}}
+          component={CartScreen}
+          options={{
+            tabBarIcon: () => {
+              return <Ionicons name="cart" size={20} />;
+            },
+          }}
+        />
+      </MainMenuTab.Navigator>
+    );
+  }
+}
 
 class ProfileStackScreen extends Component {
   render() {
