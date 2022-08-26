@@ -29,6 +29,7 @@ export default class CartScreen extends Component {
     this.state = {
       isFetching: false,
       order_id: '',
+	  total_price:'',
       user_id: '',
       tableNo: 1,
       dineInOrTakeaway: '',
@@ -69,7 +70,8 @@ export default class CartScreen extends Component {
       })
       .then(cartItems => {
         this.setState({cartItems: cartItems});
-        console.log(cartItems);
+		this.calculateTotalPrice();
+        // console.log(cartItems);
       })
       .catch(error => {
         console.log(error);
@@ -103,6 +105,7 @@ export default class CartScreen extends Component {
         if (respondJson.affected > 0) {
           Alert.alert('Item is added successfully.', this.state.item_id);
           this.setState({order_id: respondJson.id});
+		  console.log(this.state.order_id)
         } else {
           Alert.alert('Error in SAVING');
         }
@@ -183,6 +186,7 @@ export default class CartScreen extends Component {
         return response.json();
       })
       .then(responseJson => {
+		this.calculateTotalPrice();
         if (responseJson.affected == 0) {
           Alert.alert('Error in DELETING');
         }
@@ -219,6 +223,7 @@ export default class CartScreen extends Component {
         return response.json();
       })
       .then(respondJson => {
+		this.calculateTotalPrice();
         if (respondJson.affected > 0) {
           console.log('Update Successfully!');
         } else {
@@ -248,8 +253,7 @@ export default class CartScreen extends Component {
       let info = this.findItem(item.item_id);
       totalPrice += info.price * item.quantity;
     }
-
-    return totalPrice.toFixed(2);
+	this.setState({total_price: totalPrice});
   };
 
   makeOrder = () => {
@@ -303,7 +307,7 @@ export default class CartScreen extends Component {
     let footerComponent = () => (
       <View>
         <Text style={styles.totalPrice}>
-          {`Total RM${this.calculateTotalPrice()}`}
+          {'Total RM' + Number(this.state.total_price).toFixed(2)}
         </Text>
         <Button onPress={this.makeOrder} title={'Order'} />
       </View>

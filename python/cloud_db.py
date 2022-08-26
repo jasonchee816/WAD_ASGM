@@ -28,8 +28,7 @@ db.execute('''CREATE TABLE orders(
 db.execute('''CREATE TABLE order_item(
     order_id integer, 
     item_id integer,
-    quantity integer, 
-    PRIMARY KEY (order_id, item_id)
+    quantity integer
 )''')
 
 cursor = db.cursor()
