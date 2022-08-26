@@ -51,7 +51,7 @@ export default class OrderHistoryScreen extends Component {
   }
 
   componentDidMount() {
-    this._load();
+    
     this._readSettings();
   }
 
@@ -60,6 +60,7 @@ export default class OrderHistoryScreen extends Component {
       let user_id = await AsyncStorage.getItem('user_id');
       if (user_id !== null) {
         this.setState({id: user_id});
+        this._load();
       }
     } catch (error) {
       console.log('## ERROR READING ITEM ##: ', error);

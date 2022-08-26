@@ -4,7 +4,7 @@ import {Button, Text, View, Alert, FlatList, StyleSheet} from 'react-native';
 import {TwoRadioButtons} from '../components/cartScreenComponents/TwoRadioButtons.js';
 import {CartItem} from '../components/cartScreenComponents/CartItem.js';
 import {DropDownListWithLabel} from '../components/cartScreenComponents/DropDownListWithLabel.js';
-import {MenuData} from './MenuData';
+import MenuData from './MenuData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useIsFocused} from '@react-navigation/native';
 /**
@@ -28,12 +28,13 @@ export default class CartScreen extends Component {
     super(props);
     this.state = {
       isFetching: false,
+	  order_id: '',
       user_id: '',
       tableNo: 1,
       dineInOrTakeaway: '',
       cartItems: [],
     };
-
+	this.findItem = this.findItem.bind(this);
     this._save = this._save.bind(this);
     this._addOrderItem = this._addOrderItem.bind(this);
     this._edit = this._edit.bind(this);
@@ -106,7 +107,7 @@ export default class CartScreen extends Component {
           Alert.alert('Error in SAVING');
         }
         // this.props.route.params._refresh();
-        this.props.navigation.goBack();
+        // this.props.navigation.goBack();
       })
       .catch(error => {
         console.log(error);
@@ -124,7 +125,7 @@ export default class CartScreen extends Component {
       },
       body: JSON.stringify({
         order_id: this.state.order_id,
-        item_name: id,
+        item_id: id,
         quantity: itemQuantity,
       }),
     })
@@ -144,7 +145,7 @@ export default class CartScreen extends Component {
           Alert.alert('Error in SAVING');
         }
         // this.props.route.params._refresh();
-        this.props.navigation.goBack();
+        // this.props.navigation.goBack();
       })
       .catch(error => {
         console.log(error);
@@ -231,11 +232,22 @@ export default class CartScreen extends Component {
       });
   }
 
+  findItem(para_id) {
+	for (let i = 0; i < MenuData.length; i++) {
+		console.log(MenuData[i].id)
+	  if (MenuData[i].id == para_id) {
+		return MenuData[i];
+	  }
+	}
+  }
+
   /** @return {String} total price with 2 decimal place */
   calculateTotalPrice = () => {
     let totalPrice = 0;
-    for (let item of this.state.cartItems)
-      totalPrice += AllMenu[item.item_id].price * item.quantity;
+    for (let item of this.state.cartItems) {
+      let info = this.findItem(item.item_id);
+      totalPrice += info.price * item.quantity;
+    }
 
     return totalPrice.toFixed(2);
   };
@@ -284,8 +296,6 @@ export default class CartScreen extends Component {
   };
 
   render() {
-    // console.log(AllMenu[0]);
-    // // console.log(AllMenu);
 
     if (!this.state.cartItems || this.state.cartItems.length <= 0)
       return <Text style={styles.blankContainer}>No item in your cart.</Text>; // TODO: test that the screen will turn to this when remove all the items from cart

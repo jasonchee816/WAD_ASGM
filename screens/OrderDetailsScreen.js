@@ -51,6 +51,7 @@ export default class OrderDetailsScreen extends Component {
       });
   }
 
+
   componentDidMount() {
     this._load();
   }

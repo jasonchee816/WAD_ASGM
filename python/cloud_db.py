@@ -27,10 +27,9 @@ db.execute('''CREATE TABLE orders(
 
 db.execute('''CREATE TABLE order_item(
     order_id integer, 
-    item_name text,
+    item_id integer,
     quantity integer, 
-    price real,
-    PRIMARY KEY (order_id, item_name)
+    PRIMARY KEY (order_id, item_id)
 )''')
 
 cursor = db.cursor()
@@ -79,28 +78,28 @@ cursor.execute('''
 ''')
 
 cursor.execute('''
-    INSERT INTO order_item(order_id, item_name, quantity, price) 
-    VALUES(1, 'Ribeye Steak', 2, 40.00)
+    INSERT INTO order_item(order_id, item_id, quantity) 
+    VALUES(1, 6 , 2)
 ''')
 
 cursor.execute('''
-    INSERT INTO order_item(order_id, item_name, quantity, price) 
-    VALUES(1, 'Chicken Supreme', 3, 30.00)
+    INSERT INTO order_item(order_id, item_id, quantity) 
+    VALUES(1, 9, 3)
 ''')
 
 cursor.execute('''
-    INSERT INTO order_item(order_id, item_name, quantity, price) 
-    VALUES(1, 'Whooper Jr', 1, 18.00)
+    INSERT INTO order_item(order_id, item_id, quantity) 
+    VALUES(1, 16, 1)
 ''')
 
 cursor.execute('''
-    INSERT INTO order_item(order_id, item_name, quantity, price) 
-    VALUES(2, 'Long Cheesy Onion Beef', 1, 22.00)
+    INSERT INTO order_item(order_id, item_id, quantity) 
+    VALUES(2, 17, 1)
 ''')
 
 cursor.execute('''
-    INSERT INTO order_item(order_id, item_name, quantity, price) 
-    VALUES(3, 'Caffe Latte', 1, 12.00)
+    INSERT INTO order_item(order_id, item_id, quantity) 
+    VALUES(3, 19, 1)
 ''')
 
 db.commit()
