@@ -1,10 +1,11 @@
 /**
  * @author 		Group 9
- * @author
- * @author
- * @author
- * @author
+ * @author    Chee Jia Sheng 1902941
+ * @author    Cheok Jia Le 1901880
+ * @author    Tong Wei Ling 1901268
+ * @author    Lee Yi Tien 1904896
  * @author		Yang Chu Yan 2005912
+ * 
  *
  * @description This system aims to digitalize the food ordering process.
  *				The customer will have to create an account for the app.
@@ -14,12 +15,11 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Button, Text, View, Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {TouchableHighlight} from 'react-native-gesture-handler';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -68,19 +68,25 @@ class LoginedDrawerScreen extends Component {
 }
 
 class MainMenuTabScreen extends Component {
-  render() {
-    return (
-      <MainMenuTab.Navigator>
-        <MainMenuTab.Screen name="MainMenu" component={MainMenuScreen} />
-        <MainMenuTab.Screen
-          name="Cart"
-          // options={{unmountOnBlur: true}}
-          component={CartScreen}
-        />
-      </MainMenuTab.Navigator>
-    );
-  }
-}
+   render() {
+     return (
+       <MainMenuTab.Navigator>
+         <MainMenuTab.Screen 
+          name="MainMenu" 
+          component={MainMenuScreen}
+          options ={{
+            tabBarIcon: () => {return <Ionicons name="home" size={20}/>}
+          }} />
+         <MainMenuTab.Screen name="Cart" 
+         // options={{unmountOnBlur: true}}
+         component={CartScreen} 
+         options ={{
+          tabBarIcon: () => {return <Ionicons name="cart" size={20}/>}
+        }} />
+       </MainMenuTab.Navigator>
+     );
+   }
+ }
 
 class ProfileStackScreen extends Component {
   render() {
@@ -142,7 +148,6 @@ export default class App extends Component {
   }
 
   render() {
-    // console.log('[+] <FirstScreen> render() invoked');
     return (
       <NavigationContainer>
         <MainStack.Navigator screenOptions={{headerShown: false}}>

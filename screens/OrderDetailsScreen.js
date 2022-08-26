@@ -43,7 +43,6 @@ export default class OrderDetailsScreen extends Component {
     this.setState({isFetching: true});
     fetch(url)
       .then(response => {
-        // console.log(response);
         if (!response.ok) {
           Alert.alert('Error:', response.status.toString());
           throw Error('Error ' + response.status);
@@ -65,7 +64,6 @@ export default class OrderDetailsScreen extends Component {
 
   render() {
     console.log(this.state.order_items);
-    // console.log(this.state.food_info);
     return (
       <View style={{flex: 1}}>
         <BackButton

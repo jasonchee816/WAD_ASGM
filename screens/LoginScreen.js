@@ -100,7 +100,7 @@ export default class LoginScreen extends Component {
     return (
       <Background>
         {/* Move back to the previous stack */}
-        <BackButton goBack={this.props.navigation.goBack} />
+      
         <Logo />
         <Header>Welcome back.</Header>
         <TextInput

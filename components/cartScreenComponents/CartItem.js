@@ -54,25 +54,6 @@ function findItem(para_id) {
 			/>
 		  </View>
 
-		{/* <View style={styles.AddToCartButtonContainer}>
-            <View style={styles.addButton}>
-              <Ionicons
-                name="remove"
-                size={40}
-                color='pink'
-                onPress={this.removeOne}
-              />
-            </View>
-            <Text style={styles.quantityStyle}>{this.state.quantity}</Text>
-            <View style={styles.addButton}>
-                <Ionicons
-                  name="add"
-                  size={40}
-                  color='pink'
-                  onPress={this.addOne}
-                />
-              </View>
-            </View>*/}
 		</View> 
 		
 	  </View>

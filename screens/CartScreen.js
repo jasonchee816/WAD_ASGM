@@ -29,14 +29,14 @@ export default class CartScreen extends Component {
     this.state = {
       isFetching: false,
       order_id: '',
-	  total_price:'',
+      total_price: '',
       user_id: '',
       tableNo: 1,
       dineInOrTakeaway: '',
       cartItems: [],
     };
 
-	this._clear_cart = this._clear_cart.bind(this);
+    this._clear_cart = this._clear_cart.bind(this);
     this.findItem = this.findItem.bind(this);
     this._save = this._save.bind(this);
     this._addOrderItem = this._addOrderItem.bind(this);
@@ -62,7 +62,6 @@ export default class CartScreen extends Component {
     this.setState({isFetching: true});
     fetch(url)
       .then(response => {
-        console.log(response);
         if (!response.ok) {
           Alert.alert('Error:', response.status.toString());
           throw Error('Error ' + response.status);
@@ -72,8 +71,7 @@ export default class CartScreen extends Component {
       })
       .then(cartItems => {
         this.setState({cartItems: cartItems});
-		this.calculateTotalPrice();
-        // console.log(cartItems);
+        this.calculateTotalPrice();
       })
       .catch(error => {
         console.log(error);
@@ -107,12 +105,16 @@ export default class CartScreen extends Component {
         if (respondJson.affected > 0) {
           Alert.alert('Item is added successfully.');
           this.setState({order_id: respondJson.id});
-		  console.log(this.state.order_id)
+          this.state.cartItems.map(item => {
+            this._addOrderItem(item.item_id, item.quantity);
+          });
+          return respondJson.affected;
         } else {
           Alert.alert('Error in SAVING');
         }
-        // this.props.route.params._refresh();
-        // this.props.navigation.goBack();
+      })
+      .then(response => {
+        this._clear_cart();
       })
       .catch(error => {
         console.log(error);
@@ -120,6 +122,9 @@ export default class CartScreen extends Component {
   }
 
   _addOrderItem(id, itemQuantity) {
+    console.log(this.state.order_id);
+    console.log(id);
+    console.log(itemQuantity);
     let url = config.settings.serverPath + '/api/addOrderItem';
 
     fetch(url, {
@@ -145,7 +150,7 @@ export default class CartScreen extends Component {
 
       .then(respondJson => {
         if (respondJson.affected > 0) {
-        //   Alert.alert('Order Item is added successfully.');
+          //   Alert.alert('Order Item is added successfully.');
         } else {
           Alert.alert('Error in SAVING');
         }
@@ -161,7 +166,6 @@ export default class CartScreen extends Component {
     try {
       let id = await AsyncStorage.getItem('user_id');
       if (id !== null) {
-        console.log(parseInt(id));
         this.setState({user_id: id});
         this._load();
       }
@@ -188,7 +192,7 @@ export default class CartScreen extends Component {
         return response.json();
       })
       .then(responseJson => {
-		this.calculateTotalPrice();
+        this.calculateTotalPrice();
         if (responseJson.affected == 0) {
           Alert.alert('Error in DELETING');
         }
@@ -196,8 +200,6 @@ export default class CartScreen extends Component {
       .catch(error => {
         console.log(error);
       });
-    //   this.props.route.params._refresh();
-    //   this.props.navigation.goBack();
   }
 
   _clear_cart() {
@@ -225,10 +227,7 @@ export default class CartScreen extends Component {
       .catch(error => {
         console.log(error);
       });
-    //   this.props.route.params._refresh();
-    //   this.props.navigation.goBack();
   }
-
 
   _edit(id, newQuantity) {
     let url = config.settings.serverPath + '/api/updateQty';
@@ -246,7 +245,6 @@ export default class CartScreen extends Component {
       }),
     })
       .then(response => {
-        console.log(response);
         if (!response.ok) {
           Alert.alert('Error:', response.status.toString());
           throw Error('Error ' + response.status);
@@ -255,14 +253,11 @@ export default class CartScreen extends Component {
         return response.json();
       })
       .then(respondJson => {
-		this.calculateTotalPrice();
+        this.calculateTotalPrice();
         if (respondJson.affected > 0) {
-          console.log('Update Successfully!');
         } else {
           Alert.alert('Error in UPDATING');
         }
-        // this.props.route.params._refresh();
-        // this.props.navigation.goBack();
       })
       .catch(error => {
         console.log(error);
@@ -271,7 +266,6 @@ export default class CartScreen extends Component {
 
   findItem(para_id) {
     for (let i = 0; i < MenuData.length; i++) {
-      console.log(MenuData[i].id);
       if (MenuData[i].id == para_id) {
         return MenuData[i];
       }
@@ -285,17 +279,13 @@ export default class CartScreen extends Component {
       let info = this.findItem(item.item_id);
       totalPrice += info.price * item.quantity;
     }
-	this.setState({total_price: totalPrice});
+    this.setState({total_price: totalPrice});
   };
 
   makeOrder = () => {
     this._save();
-    this.state.cartItems.map(item => {
-      this._addOrderItem(item.item_id, item.quantity);
-    });
-	this._clear_cart();
-	this.props.navigation.navigate('MainMenu');
-	Alert.alert('Order Made Successfully')
+    this.props.navigation.navigate('MainMenu');
+    Alert.alert('Order Made Successfully');
   };
 
   /** to be called by FlatList */

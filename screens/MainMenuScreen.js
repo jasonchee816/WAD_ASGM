@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Text, View, Image, SafeAreaView, StyleSheet, FlatList, TouchableHighlight } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import MenuData from '../screens/MenuData';
-//import {SaladMenu, MainCourseMenu, PizzaMenu, PastaMenu, BurgerMenu, CoffeeAndTeaMenu, SmoothiesMenu, WineMenu, DessertMenu} from '../screens/MenuData';
 
 export default class MainMenuScreen extends Component {
+
   MenuCard = ({ item }) => {
     return (
       <TouchableHighlight
@@ -26,16 +26,6 @@ export default class MainMenuScreen extends Component {
   render(){
     return(
       <SafeAreaView style={styles.container}>
-      {/* <SectionList
-        sections={[...SaladMenu, ...MainCourseMenu, ...PizzaMenu, ...PastaMenu, ...BurgerMenu, ...CoffeeAndTeaMenu, ...SmoothiesMenu, ...WineMenu, ...DessertMenu]}
-        contentContainerStyle={{ paddingBottom: 80 }}
-        renderItem={this.MenuCard}
-        renderSectionHeader={({section})=>(
-          <Text style={styles.sectionTitleStyle}>{section.title}</Text>
-        )}
-        keyExtractor={item=>item.id}
-        stickySectionHeadersEnabled
-      /> */}
 
       <FlatList
         showsHorizontalScrollIndicator={false}

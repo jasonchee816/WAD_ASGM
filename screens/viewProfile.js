@@ -81,6 +81,16 @@ export default class ProfileScreen extends Component {
                     </View>
                 </TouchableOpacity>
 
+                <TouchableOpacity activeOpacity={0.8} style={{marginTop: 20}} onPress={() => { this.props.navigation.reset({
+                    index: 0,
+                    routes: [{name: 'NotLogined'}],
+                }) 
+                }
+                }>
+                    <View style={styles.btnContainer}>
+                        <Text style={styles.buttonTitle}>LogOut</Text>
+                    </View>
+                </TouchableOpacity>
 
             </ScrollView>
         );
