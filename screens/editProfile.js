@@ -40,7 +40,6 @@ export default class ProfileScreen extends Component {
             let keys = await AsyncStorage.multiGet(
                 ['user_id', 'password'],
                 (err, stores) => {
-                    console.log(stores)
                     stores.map((result, i, store) => {
                         let key = store[i][0];
                         let value = store[i][1];
@@ -62,7 +61,6 @@ export default class ProfileScreen extends Component {
     }
 
     onEditPressed = () => {
-        console.log(this.state.old_password.value, this.state.async_password, this.state.password.value)
 
         const oldPasswordError = oldPwdValidator(
             this.state.old_password.value,
@@ -169,7 +167,6 @@ export default class ProfileScreen extends Component {
 
 
     render() {
-        console.log(this.state.password.error)
         return (
             <ScrollView>
                 <BackButton title="  Edit Profile" onPress={this.props.navigation.goBack} />

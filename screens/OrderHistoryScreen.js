@@ -34,7 +34,6 @@ export default class OrderHistoryScreen extends Component {
     this.setState({isFetching: true});
     fetch(url)
       .then(response => {
-        console.log(response);
         if (!response.ok) {
           Alert.alert('Error:', response.status.toString());
           throw Error('Error ' + response.status);

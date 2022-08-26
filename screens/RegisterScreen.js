@@ -28,7 +28,6 @@ export default class RegisterScreen extends Component {
       },
     };
     this.onSignUpPressed = this.onSignUpPressed.bind(this);
-    // this._CheckExistingMember = this._CheckExistingMember.bind(this);
     this._InsertIntoMember = this._InsertIntoMember.bind(this);
   }
   // error control on name, email and password
@@ -49,35 +48,6 @@ export default class RegisterScreen extends Component {
     }
     this._InsertIntoMember();
   };
-  // _CheckExistingMember() {
-  //   let url = config.settings.serverPath + '/api/Checkmember';
-
-  //   fetch(url, {
-  //     method: 'POST',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       email: this.state.email.value,
-  //     }),
-  //   })
-  //     .then(response => {
-  //       console.log(response.json());
-  //       if (Object.keys(response.json()).length > 0) {
-  //         Alert.alert('Existing acc detected');
-  //         this.props.navigation.navigate('LoginScreen');
-  //         throw Error('Error ' + response.status);
-  //       } else {
-  //         this._InsertIntoMember();
-  //         Alert.alert('Account Successfully Created!');
-  //       }
-  //     })
-
-  //     .catch(error => {
-  //       console.log(error);
-  //     });
-  // }
 
   _InsertIntoMember() {
     let url = config.settings.serverPath + '/api/Insertmember';
@@ -110,7 +80,6 @@ export default class RegisterScreen extends Component {
         } else {
           Alert.alert('Error in SAVING');
         }
-        // this.props.route.params._refresh();
         this.props.navigation.navigate('Login');
       })
       .catch(error => {

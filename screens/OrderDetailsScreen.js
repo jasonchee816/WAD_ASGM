@@ -63,7 +63,6 @@ export default class OrderDetailsScreen extends Component {
   }
 
   render() {
-    console.log(this.state.order_items);
     return (
       <View style={{flex: 1}}>
         <BackButton

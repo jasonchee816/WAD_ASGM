@@ -57,15 +57,6 @@ export default class FoodDetailScreen extends Component {
     }
   }
 
-  // _insert() {
-  //   this.db.transaction(tx => {
-  //     tx.executeSql('INSERT INTO cart_items(user_id, item_id, quantity) VALUES (?,?,?)',
-  //     [this.state.user_id, this.state.item_id, this.state.quantity])
-  //   })
-  //   this.props.navigation.goBack();
-  //   console.log(this.state.user_id, this.state.item_id, this.state.quantity)
-  // }
-
   _save = async () => {
     let url = config.settings.serverPath + '/api/addCart';
 

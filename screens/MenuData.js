@@ -32,7 +32,7 @@ const MenuData = [
         name: 'Fish and Chips',
         desc: 'Fried Dory Fish with Crunchy Wedges paired with the Homemade Tartar Sauce.',
         price: 19.00,
-        image: 'https://en.wikipedia.org/wiki/File:Fish_and_chips_blackpool.jpg',
+        image: 'https://www.thespruceeats.com/thmb/-Hq2aVGdlH43SB1R-A7UK2dCb6k=/1500x844/smart/filters:no_upscale()/best-fish-and-chips-recipe-434856-Hero-5b61b89346e0fb00500f2141.jpg',
     },
     {
         id: '6',

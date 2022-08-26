@@ -156,10 +156,10 @@ export default class App extends Component {
             component={NotLoginedStackScreen}
           />
           <MainStack.Screen name="Logined" component={LoginedDrawerScreen} />
-          <MainStack.Screen
+          {/* <MainStack.Screen
             name="Order Details"
             component={OrderDetailsScreen}
-          />
+          /> */}
           <MainStack.Screen name="Food Details" component={FoodDetailScreen} />
         </MainStack.Navigator>
       </NavigationContainer>
