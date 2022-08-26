@@ -89,7 +89,6 @@ export default class RegisterScreen extends Component {
   render() {
     return (
       <Background>
-        <BackButton goBack={this.props.navigation.goBack} />
         <Logo />
         <Header>Create Account</Header>
         <TextInput
