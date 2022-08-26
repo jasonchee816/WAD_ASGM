@@ -1,7 +1,6 @@
 import React from 'react';
 import { Text, View, Pressable, Image, StyleSheet } from 'react-native';
-import { AllMenu } from '../../screens/AllMenu.js';
-
+import {SaladMenu, MainCourseMenu, PizzaMenu, PastaMenu, BurgerMenu, CoffeeAndTeaMenu, SmoothiesMenu, WineMenu, DessertMenu} from '../../screens/MenuData';
 function PlusButton(props) {
 	/* props of Pressable will be inherit by PlusButton */
 	return(
@@ -26,15 +25,27 @@ function MinusButton(props) {
  * @property {Number} props.item_id
  * @property {Function(Number)} props.onQuantityChang
  */
+//  const WineMenu = [{
+//     title: "Wine",
+//     data: [
+//     {
+//         id: '28',
+//         name: 'Penfolds St.Henri Shiraz 2016',
+//         desc: 'Variety: Syrah/Shiraz\nVintage: 2016\nAppellation: Barossa Valley, Australia',
+//         price: 160.00,
+//         image: require('../images/penfolds2016.png'),
+//     },
+
 
 export function CartItem(props) {
-    let item = AllMenu[props.item_id];
-
+	let item = MenuData[props.item_id];
+	// console.log(item);
 	function goToFoodDetailsPage(item_id) {
 		// props.navigation.navigate('Food Details', {
 		// 	index: propsitem_id
 		// });
 	}
+
 
     return(
         <View style={styles.container}>
@@ -42,7 +53,7 @@ export function CartItem(props) {
 				onPress={() => goToFoodDetailsPage(props.item_id)}
 				style={styles.item}
 			>
-				<Image source={item.image} style={styles.image}/>
+				{/* <Image source={item.image} style={styles.image}/> */}
 			</Pressable>
 			<View style={styles.label}>
 				<Text>{item.name}</Text>
@@ -94,4 +105,4 @@ const styles = StyleSheet.create({
 		fontSize: 17,
 		paddingHorizontal: 10,
 	}
-});
+})

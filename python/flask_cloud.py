@@ -1,6 +1,7 @@
 import sqlite3
 from flask import Flask, jsonify, request, abort
 from argparse import ArgumentParser
+from datetime import date
 
 
 DB = 'LMEO.sqlite'
@@ -285,6 +286,8 @@ def add_cart():
     new_cart = (
         request.json['user_id'],
         request.json['item_id'],
+        request.json['item_name'],
+        request.json['price'],
         request.json['quantity'],
     )
 
@@ -302,6 +305,71 @@ def add_cart():
 
     response = {
         'id': item_id,
+        'affected': db.total_changes,
+    }
+
+    db.close()
+
+    return jsonify(response), 201
+
+
+@app.route('/api/addOrder', methods=['POST'])
+def add_orderPrice():
+    if not request.json:
+        abort(404)
+
+    today = date.today()
+
+    new_order = (
+        today,
+        request.json['member_id'],
+        request.json['total_price'],
+    )
+
+    db = sqlite3.connect(DB)
+    cursor = db.cursor()
+
+    cursor.execute('''
+        INSERT INTO orders(order_datetime, member_id, total_price)
+        VALUES(?,?,?)
+    ''', new_order)
+
+    order_id = cursor.lastrowid
+
+    db.commit()
+
+    response = {
+        'id': order_id,
+        'affected': db.total_changes,
+    }
+
+    db.close()
+
+    return jsonify(response), 201
+
+
+@app.route('/api/addOrderItem', methods=['POST'])
+def add_orderItem():
+    if not request.json:
+        abort(404)
+
+    new_orderItem = (
+        request.json['order_id'],
+        request.json['item_id'],
+        request.json['quantity'],
+    )
+
+    db = sqlite3.connect(DB)
+    cursor = db.cursor()
+
+    cursor.execute('''
+        INSERT INTO order_item(order_id, item_id, quantity)
+        VALUES(?,?,?)
+    ''', new_orderItem)
+
+    db.commit()
+
+    response = {
         'affected': db.total_changes,
     }
 

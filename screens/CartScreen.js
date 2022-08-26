@@ -48,9 +48,9 @@ export default class CartScreen extends Component {
 		});
 	  }
 	
-	  componentWillUnmount() {
+	componentWillUnmount() {
 		this._unsubscribe();
-	  }
+	}
 
 	_load() {
 		let id = this.state.user_id-0;
@@ -68,11 +68,90 @@ export default class CartScreen extends Component {
 		  })
 		  .then(cartItems => {
 			this.setState({ cartItems: cartItems });
+			console.log(cartItems)
 		  })
 		  .catch(error => {
 			console.log(error);
 		  });
 	  }
+
+	  _save = async () => {
+		let url = config.settings.serverPath + '/api/addOrder';
+	
+		fetch(url, {
+		  method: 'POST',
+		  headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		  },
+		  body: JSON.stringify({
+			
+			member_id: this.state.user_id,
+			total_price: this.state.total_price,
+		  }),
+		})
+		  .then(response => {
+			if (!response.ok) {
+			  Alert.alert('Error Requesting');
+			  throw Error('Error ' + response.status);
+			}
+	
+			return response.json();
+		  })
+		  
+		  .then(respondJson => {
+			if (respondJson.affected > 0) {
+			  Alert.alert('Item is added successfully.', this.state.item_id);
+			} else {
+			  Alert.alert('Error in SAVING');
+			}
+			// this.props.route.params._refresh();
+			this.props.navigation.goBack();
+		  })
+		  .catch(error => {
+			console.log(error);
+		  });
+	  };
+
+	  _addOrderItem = async () => {
+		let url = config.settings.serverPath + '/api/addOrderItem';
+	
+		fetch(url, {
+		  method: 'POST',
+		  headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		  },
+		  body: JSON.stringify({
+			
+			order_id: this.state.order_id,
+			item_name: this.state.item_name,
+			quantity: this.state.quantity,
+			price: this.state.price,
+		  }),
+		})
+		  .then(response => {
+			if (!response.ok) {
+			  Alert.alert('Error Requesting');
+			  throw Error('Error ' + response.status);
+			}
+	
+			return response.json();
+		  })
+		  
+		  .then(respondJson => {
+			if (respondJson.affected > 0) {
+			  Alert.alert('Order Item is added successfully.');
+			} else {
+			  Alert.alert('Error in SAVING');
+			}
+			// this.props.route.params._refresh();
+			this.props.navigation.goBack();
+		  })
+		  .catch(error => {
+			console.log(error);
+		  });
+	  };
 
 	async _readSettings() {
 		try {
@@ -171,6 +250,7 @@ export default class CartScreen extends Component {
 		let totalPrice = 0;
 		for (let item of this.state.cartItems)
 			totalPrice += AllMenu[item.item_id].price * item.quantity;
+			
 		return totalPrice.toFixed(2);
 	}
 
