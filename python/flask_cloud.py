@@ -205,6 +205,32 @@ def delete():
 
     return jsonify(response), 201
 
+@app.route('/api/clearCart', methods=['DELETE'])
+def clear_cart():
+    if not request.json:
+        abort(400)
+
+    if 'user_id' not in request.json:
+        abort(400)
+
+    clear_item = (
+        request.json['user_id'],
+    )
+    db = sqlite3.connect(DB)
+    cursor = db.cursor()
+
+    cursor.execute('DELETE FROM cart_items WHERE user_id=? ', clear_item)
+
+    db.commit()
+
+    response = {
+        'affected': db.total_changes,
+    }
+
+    db.close()
+
+    return jsonify(response), 201
+
 @app.route('/api/updateQty', methods=['PUT'])
 def update():
     if not request.json:

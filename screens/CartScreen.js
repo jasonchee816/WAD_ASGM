@@ -35,6 +35,8 @@ export default class CartScreen extends Component {
       dineInOrTakeaway: '',
       cartItems: [],
     };
+
+	this._clear_cart = this._clear_cart.bind(this);
     this.findItem = this.findItem.bind(this);
     this._save = this._save.bind(this);
     this._addOrderItem = this._addOrderItem.bind(this);
@@ -103,7 +105,7 @@ export default class CartScreen extends Component {
 
       .then(respondJson => {
         if (respondJson.affected > 0) {
-          Alert.alert('Item is added successfully.', this.state.item_id);
+          Alert.alert('Item is added successfully.');
           this.setState({order_id: respondJson.id});
 		  console.log(this.state.order_id)
         } else {
@@ -143,7 +145,7 @@ export default class CartScreen extends Component {
 
       .then(respondJson => {
         if (respondJson.affected > 0) {
-          Alert.alert('Order Item is added successfully.');
+        //   Alert.alert('Order Item is added successfully.');
         } else {
           Alert.alert('Error in SAVING');
         }
@@ -197,6 +199,36 @@ export default class CartScreen extends Component {
     //   this.props.route.params._refresh();
     //   this.props.navigation.goBack();
   }
+
+  _clear_cart() {
+    let url = config.settings.serverPath + '/api/clearCart';
+    fetch(url, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({user_id: this.state.user_id}),
+    })
+      .then(response => {
+        if (!response.ok) {
+          Alert.alert('Error:', response.status.toString());
+          throw Error('Error ' + response.status);
+        }
+        return response.json();
+      })
+      .then(responseJson => {
+        if (responseJson.affected == 0) {
+          Alert.alert('Error in DELETING');
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    //   this.props.route.params._refresh();
+    //   this.props.navigation.goBack();
+  }
+
 
   _edit(id, newQuantity) {
     let url = config.settings.serverPath + '/api/updateQty';
@@ -261,6 +293,9 @@ export default class CartScreen extends Component {
     this.state.cartItems.map(item => {
       this._addOrderItem(item.item_id, item.quantity);
     });
+	this._clear_cart();
+	this.props.navigation.navigate('MainMenu');
+	Alert.alert('Order Made Successfully')
   };
 
   /** to be called by FlatList */

@@ -92,7 +92,7 @@ export default class FoodDetailScreen extends Component {
       
       .then(respondJson => {
         if (respondJson.affected > 0) {
-          Alert.alert('Item is added successfully.', this.state.item_id);
+          Alert.alert('Added successfully.');
         } else {
           Alert.alert('Error in SAVING');
         }
