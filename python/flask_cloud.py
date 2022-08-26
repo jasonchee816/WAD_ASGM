@@ -18,9 +18,8 @@ def get_order_row_as_dict(row):
 
 def get_items_row_as_dict(row):
     row_dict = {
-        'item_name': row[0],
+        'item_id': row[0],
         'quantity': row[1],
-        'price': '{:.2f}'.format(row[2])
     }
 
     return row_dict
@@ -146,7 +145,7 @@ def add_user():
 def getOrderDetail(order_id):
     db = sqlite3.connect(DB)
     cursor = db.cursor()
-    cursor.execute('SELECT item_name, quantity, price FROM order_item WHERE order_id=?', (str(order_id),))
+    cursor.execute('SELECT item_id, quantity FROM order_item WHERE order_id=?', (str(order_id),))
     rows = cursor.fetchall()
     db.close()
 

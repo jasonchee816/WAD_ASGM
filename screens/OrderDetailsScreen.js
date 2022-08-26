@@ -13,7 +13,7 @@ import {
   Alert,
   Image,
 } from 'react-native';
-import {MenuData} from '../screens/test';
+import MenuData from './MenuData';
 import {InputWithLabel, BackButton} from '../UI';
 
 let config = require('../Config');
@@ -26,11 +26,19 @@ export default class OrderDetailsScreen extends Component {
       isFetching: false,
     };
     this._load = this._load.bind(this);
+    this.findItem = this.findItem.bind(this);
+  }
+
+  findItem(para_id) {
+    for (let i = 0; i < MenuData.length; i++) {
+      if (MenuData[i].id == para_id) {
+        return MenuData[i];
+      }
+    }
   }
 
   _load() {
     const item = this.props.route.params;
-    console.log(item);
     let url = config.settings.serverPath + '/api/order/' + item.id;
     this.setState({isFetching: true});
     fetch(url)
@@ -51,7 +59,6 @@ export default class OrderDetailsScreen extends Component {
       });
   }
 
-
   componentDidMount() {
     this._load();
   }
@@ -61,37 +68,44 @@ export default class OrderDetailsScreen extends Component {
     // console.log(this.state.food_info);
     return (
       <View style={{flex: 1}}>
-        <BackButton title="Order Details" onPress={this.props.navigation.goBack}/>
+        <BackButton
+          title="Order Details"
+          onPress={this.props.navigation.goBack}
+        />
         <FlatList
           refreshing={this.state.isFetching}
           onRefresh={this._load}
           data={this.state.order_items}
           renderItem={({item}) => {
-            let total = Number(item.quantity) * Number(item.price);
+            let info = this.findItem(item.item_id);
+            let total = Number(item.quantity) * Number(info.price);
             return (
               <TouchableHighlight>
-                <View
-                  style={styles.orderDetailsCard}>
+                <View style={styles.orderDetailsCard}>
                   <InputWithLabel
-                    label={item.item_name}
+                    label={info.name}
                     // orientation={'horizontal'}
                     textLabelStyle={styles.label}
                     textInputStyle={styles.input}
-                    value={'Price per item: RM' + item.price}
-                    editable={false}/>
+                    value={'Price per item: RM' + info.price}
+                    editable={false}
+                  />
                   <InputWithLabel
                     label={'x' + item.quantity}
                     // orientation={'horizontal'}
                     textLabelStyle={styles.label}
                     textInputStyle={styles.inputPrice}
                     value={'RM' + total}
-                    editable={false}/>
+                    editable={false}
+                  />
                 </View>
               </TouchableHighlight>
             );
           }}></FlatList>
 
-        <Text style={styles.totalPriceStyle}>{'Total: RM ' + this.props.route.params.total_price}</Text>
+        <Text style={styles.totalPriceStyle}>
+          {'Total: RM ' + this.props.route.params.total_price}
+        </Text>
       </View>
     );
   }

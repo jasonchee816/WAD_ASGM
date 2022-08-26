@@ -5,11 +5,11 @@
  * @author
  * @author
  * @author		Yang Chu Yan 2005912
- * 
- * @description This system aims to digitalize the food ordering process. 
- *				The customer will have to create an account for the app. 
- *				The customer can view the digital menu and make order, 
- * 				but they will have to pay at the counter. 
+ *
+ * @description This system aims to digitalize the food ordering process.
+ *				The customer will have to create an account for the app.
+ *				The customer can view the digital menu and make order,
+ * 				but they will have to pay at the counter.
  * 				The cusotmer can view his/her order history.
  */
 
@@ -43,7 +43,10 @@ class NotLoginedStackScreen extends Component {
     return (
       <NotLoginedStack.Navigator>
         <NotLoginedStack.Screen name="Login" component={LoginScreen} />
-        <NotLoginedStack.Screen name="RegisterScreen" component={RegisterScreen} />
+        <NotLoginedStack.Screen
+          name="RegisterScreen"
+          component={RegisterScreen}
+        />
       </NotLoginedStack.Navigator>
     );
   }
@@ -69,9 +72,11 @@ class MainMenuTabScreen extends Component {
     return (
       <MainMenuTab.Navigator>
         <MainMenuTab.Screen name="MainMenu" component={MainMenuScreen} />
-        <MainMenuTab.Screen name="Cart" 
-        // options={{unmountOnBlur: true}}
-        component={CartScreen} />
+        <MainMenuTab.Screen
+          name="Cart"
+          // options={{unmountOnBlur: true}}
+          component={CartScreen}
+        />
       </MainMenuTab.Navigator>
     );
   }
@@ -80,9 +85,17 @@ class MainMenuTabScreen extends Component {
 class ProfileStackScreen extends Component {
   render() {
     return (
-      <ProfileStack.Navigator  initialRouteName="viewProfile">
-        <ProfileStack.Screen options={{headerShown:false}} name="viewProfile" component={viewProfile} />
-        <ProfileStack.Screen options={{headerShown:false}} name="editProfile" component={editProfile}/>
+      <ProfileStack.Navigator initialRouteName="viewProfile">
+        <ProfileStack.Screen
+          options={{headerShown: false}}
+          name="viewProfile"
+          component={viewProfile}
+        />
+        <ProfileStack.Screen
+          options={{headerShown: false}}
+          name="editProfile"
+          component={editProfile}
+        />
       </ProfileStack.Navigator>
     );
   }
@@ -113,35 +126,38 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-		email: '', // Accessed by login screen, change password screen, cart screen
-		password: '', // Accessed by login screen, change password screen
-		cartItems: [
-			{
-				foodIndex: 0,
-				quantity: 1
-			},
-			{
-				foodIndex: 1,
-				quantity: 2
-			}
-		], 
+      email: '', // Accessed by login screen, change password screen, cart screen
+      password: '', // Accessed by login screen, change password screen
+      cartItems: [
+        {
+          foodIndex: 0,
+          quantity: 1,
+        },
+        {
+          foodIndex: 1,
+          quantity: 2,
+        },
+      ],
     };
   }
-
 
   render() {
     // console.log('[+] <FirstScreen> render() invoked');
     return (
       <NavigationContainer>
         <MainStack.Navigator screenOptions={{headerShown: false}}>
-          <MainStack.Screen name="NotLogined" component={NotLoginedStackScreen} />
+          <MainStack.Screen
+            name="NotLogined"
+            component={NotLoginedStackScreen}
+          />
           <MainStack.Screen name="Logined" component={LoginedDrawerScreen} />
-		      <MainStack.Screen name="Cart" component={CartScreen} />
-		      <MainStack.Screen name="Order Details" component={OrderDetailsScreen} />
-		      <MainStack.Screen name="Food Details" component={FoodDetailScreen} />
+          <MainStack.Screen
+            name="Order Details"
+            component={OrderDetailsScreen}
+          />
+          <MainStack.Screen name="Food Details" component={FoodDetailScreen} />
         </MainStack.Navigator>
       </NavigationContainer>
     );
   }
 }
-

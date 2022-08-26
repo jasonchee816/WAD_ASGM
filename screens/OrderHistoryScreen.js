@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -11,7 +11,7 @@ import {
   TouchableHighlight,
   Alert,
 } from 'react-native';
-import { InputWithLabel } from '../UI';
+import {InputWithLabel} from '../UI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 let config = require('../Config');
@@ -31,7 +31,7 @@ export default class OrderHistoryScreen extends Component {
   _load() {
     let user_id = Number(this.state.id);
     let url = config.settings.serverPath + '/api/orders/' + user_id;
-    this.setState({ isFetching: true });
+    this.setState({isFetching: true});
     fetch(url)
       .then(response => {
         console.log(response);
@@ -39,11 +39,11 @@ export default class OrderHistoryScreen extends Component {
           Alert.alert('Error:', response.status.toString());
           throw Error('Error ' + response.status);
         }
-        this.setState({ isFetching: false });
+        this.setState({isFetching: false});
         return response.json();
       })
       .then(orders => {
-        this.setState({ orders: orders });
+        this.setState({orders: orders});
       })
       .catch(error => {
         console.log(error);
@@ -51,8 +51,13 @@ export default class OrderHistoryScreen extends Component {
   }
 
   componentDidMount() {
-    
-    this._readSettings();
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this._readSettings();
+    });
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
   }
 
   async _readSettings() {
@@ -74,10 +79,10 @@ export default class OrderHistoryScreen extends Component {
           refreshing={this.state.isFetching}
           onRefresh={this._load}
           data={this.state.orders}
-          renderItem={({ item }) => {
+          renderItem={({item}) => {
             return (
               <TouchableHighlight
-                underlayColor='pink'
+                underlayColor="pink"
                 onPress={() =>
                   this.props.navigation.navigate('Order Details', item)
                 }>
@@ -88,7 +93,8 @@ export default class OrderHistoryScreen extends Component {
                     textLabelStyle={styles.TextLabel}
                     textInputStyle={styles.TextInput}
                     value={'Amount: RM ' + item.total_price}
-                    editable={false}/>
+                    editable={false}
+                  />
                 </View>
               </TouchableHighlight>
             );
@@ -112,7 +118,7 @@ export default class OrderHistoryScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
+    flex: 1,
     margin: 5,
   },
   orderCard: {
@@ -136,4 +142,4 @@ const styles = StyleSheet.create({
     color: 'gray',
     textAlign: 'right',
   },
-})
+});
