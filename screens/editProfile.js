@@ -92,7 +92,7 @@ export default class ProfileScreen extends Component {
             {
                 text: 'Yes', onPress: () => {
                     this._deleteSetting()
-                    // this._saveSetting('password', this.state.password.value)
+
                 }
             },
 

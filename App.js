@@ -69,7 +69,9 @@ class MainMenuTabScreen extends Component {
     return (
       <MainMenuTab.Navigator>
         <MainMenuTab.Screen name="MainMenu" component={MainMenuScreen} />
-        <MainMenuTab.Screen name="Cart" component={CartScreen} />
+        <MainMenuTab.Screen name="Cart" 
+        // options={{unmountOnBlur: true}}
+        component={CartScreen} />
       </MainMenuTab.Navigator>
     );
   }

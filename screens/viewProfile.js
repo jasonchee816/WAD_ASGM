@@ -74,7 +74,7 @@ export default class ProfileScreen extends Component {
                     />
                 </View>
 
-                <TouchableOpacity activeOpacity={0.8} onPress={() => { this.props.navigation.navigate('editProfile') }
+                <TouchableOpacity activeOpacity={0.8} onPress={() => { this.props.navigation.navigate('editProfile', { refresh: this._readUser }) }
                 }>
                     <View style={styles.btnContainer}>
                         <Text style={styles.buttonTitle}>Edit Profile</Text>

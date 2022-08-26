@@ -175,6 +175,75 @@ def getCartDetail(user_id):
     else: 
         return jsonify(None), 200
 
+@app.route('/api/deleteCart', methods=['DELETE'])
+def delete():
+    if not request.json:
+        abort(400)
+
+    if 'user_id' not in request.json:
+        abort(400)
+
+    if 'item_id' not in request.json:
+        abort(400)
+
+    delete_item = (
+        request.json['user_id'],
+        request.json['item_id'],
+    )
+    db = sqlite3.connect(DB)
+    cursor = db.cursor()
+
+    cursor.execute('DELETE FROM cart_items WHERE user_id=? AND item_id=?', delete_item)
+
+    db.commit()
+
+    response = {
+        'affected': db.total_changes,
+    }
+
+    db.close()
+
+    return jsonify(response), 201
+
+@app.route('/api/updateQty', methods=['PUT'])
+def update():
+    if not request.json:
+        abort(400)
+
+    if 'user_id' not in request.json:
+        abort(400)
+
+    if 'quantity' not in request.json:
+        abort(400)
+
+    if 'item_id' not in request.json:
+        abort(400)
+
+    update_quantity = (
+        request.json['quantity'],
+        request.json['user_id'],
+        request.json['item_id'],
+    )
+
+    db = sqlite3.connect(DB)
+    cursor = db.cursor()
+
+    cursor.execute('''
+        UPDATE cart_items SET
+            quantity=?
+        WHERE user_id=? AND item_id=?
+    ''', update_quantity)
+
+    db.commit()
+
+    response = {
+        'affected': db.total_changes,
+    }
+
+    db.close()
+
+    return jsonify(response), 201
+
 
 @app.route('/api/orders', methods=['POST'])
 def add_order():

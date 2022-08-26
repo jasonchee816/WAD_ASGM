@@ -6,7 +6,7 @@ import { CartItem } from '../components/cartScreenComponents/CartItem.js';
 import { DropDownListWithLabel } from '../components/cartScreenComponents/DropDownListWithLabel.js';
 import { AllMenu } from './AllMenu.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { useIsFocused } from '@react-navigation/native';
 /**
  * @class 	display cart items, 
  * 			increase or decrease quantity of an item, 
@@ -21,36 +21,41 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
  * @property {Number} this.state.cartItems[i].quantity the number of item wants to order
  */
 
-let SQLite = require('react-native-sqlite-storage');
 let config = require('../Config');
 
 export default class CartScreen extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			isFetching: false,
 			user_id: '',
 			tableNo: 1,
 			dineInOrTakeaway: '',
 			cartItems: [],
 		};
 		
-		this._setQuantityFromDatabase = this._setQuantityFromDatabase.bind(this);
-		this._deleteItemFromDatabase = this._deleteItemFromDatabase.bind(this);
-
+		// this._setQuantityFromDatabase = this._setQuantityFromDatabase.bind(this);
+		// this._deleteItemFromDatabase = this._deleteItemFromDatabase.bind(this);
+		this._edit = this._edit.bind(this);
+		this._delete = this._delete.bind(this);
 		this._load = this._load.bind(this);
 		this._readSettings = this._readSettings.bind(this);
 	}
 
 	componentDidMount() {
-		this._readSettings();
-		
-		
-	}
+		this._unsubscribe = this.props.navigation.addListener('focus', () => {
+		  this._readSettings();
+		});
+	  }
+	
+	  componentWillUnmount() {
+		this._unsubscribe();
+	  }
 
 	_load() {
 		let id = this.state.user_id-0;
 		let url = config.settings.serverPath + '/api/cart/' + id;
-		// this.setState({ isFetching: true });
+		this.setState({ isFetching: true });
 		fetch(url)
 		  .then(response => {
 			console.log(response);
@@ -58,7 +63,7 @@ export default class CartScreen extends Component {
 			  Alert.alert('Error:', response.status.toString());
 			  throw Error('Error ' + response.status);
 			}
-			// this.setState({ isFetching: false });
+			this.setState({ isFetching: false });
 			return response.json();
 		  })
 		  .then(cartItems => {
@@ -83,13 +88,83 @@ export default class CartScreen extends Component {
 		
 	}
 
-	_setQuantityFromDatabase(id, quantity) {
-		this.db.transaction(tx => tx.executeSql('UPDATE food SET quantity=? WHERE id = ?', [quantity, id]));
-	}
+	// _setQuantityFromDatabase(id, quantity) {
+	// 	this.db.transaction(tx => tx.executeSql('UPDATE food SET quantity=? WHERE id = ?', [quantity, id]));
+	// }
 
-	_deleteItemFromDatabase(id) {
-		this.db.transaction(tx => tx.executeSql('DELETE FROM food WHERE id = ?', [id]));
-	}
+	// _deleteItemFromDatabase(id) {
+	// 	this.db.transaction(tx => tx.executeSql('DELETE FROM food WHERE id = ?', [id]));
+	// }
+	_delete(item_id) {
+			  let url = config.settings.serverPath + '/api/deleteCart' ;
+			  fetch(url, {
+				method: 'DELETE',
+				headers: {
+				  Accept: 'application/json',
+				  'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({user_id: this.state.user_id, item_id: item_id}),
+			  })
+				.then(response => {
+				  if (!response.ok) {
+					Alert.alert('Error:', response.status.toString());
+					throw Error('Error ' + response.status);
+				  }
+				  return response.json();
+				})
+				.then(responseJson => {
+				  if (responseJson.affected == 0) {
+					Alert.alert('Error in DELETING');
+				  }
+				})
+				.catch(error => {
+					
+				  console.log(error);
+				});
+			//   this.props.route.params._refresh();
+			//   this.props.navigation.goBack();
+			}
+		
+
+	_edit(id, newQuantity) {
+		let url = config.settings.serverPath + '/api/updateQty' ;
+	
+		fetch(url, {
+		  method: 'PUT',
+		  headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		  },
+		  body: JSON.stringify({
+			quantity: newQuantity,
+			user_id: this.state.user_id,
+			item_id: id,
+		  }),
+		})
+		  .then(response => {
+			console.log(response);
+			if (!response.ok) {
+			  Alert.alert('Error:', response.status.toString());
+			  throw Error('Error ' + response.status);
+			}
+	
+			return response.json();
+		  })
+		  .then(respondJson => {
+			if (respondJson.affected > 0) {
+			  Alert.alert('Update Succesfully');
+			} else {
+			  Alert.alert('Error in UPDATING');
+			}
+			// this.props.route.params._refresh();
+			// this.props.navigation.goBack();
+		  })
+		  .catch(error => {
+			console.log(error);
+		  });
+	  }
+	
+	
 
 	/** @return {String} total price with 2 decimal place */
 	calculateTotalPrice = () => {
@@ -138,7 +213,6 @@ export default class CartScreen extends Component {
 
 	/** to be called by FlatList */
 	renderCartItem = (item, index) => {
-		console.log(this.state.cartItems)
 		return (
 			<CartItem
 				item_id={item.item_id}
@@ -159,10 +233,10 @@ export default class CartScreen extends Component {
 									onPress: () => {
 										let newCartItems = this.state.cartItems.slice();
 										newCartItems.splice(index, 1); // Remove 1 element
-										console.log(newCartItems);
 										this.setState({ cartItems: newCartItems });
-										this._deleteItemFromDatabase(item.item_id);
-									}
+										this._delete(item.item_id);
+									},
+									
 								}
 							]
 						);
@@ -171,7 +245,7 @@ export default class CartScreen extends Component {
 						let newCartItems = this.state.cartItems.slice(); // Copy the array
 						newCartItems[index].quantity = newQuantity;
 						this.setState({ cartItems: newCartItems });
-						this._setQuantityFromDatabase(item.item_id, newQuantity);
+						this._edit(item.item_id, newQuantity);
 					}
 				}}
 			/>
@@ -204,7 +278,7 @@ export default class CartScreen extends Component {
 					{`Total RM${this.calculateTotalPrice()}`}
 				</Text>
 				<Button
-					onPress={this.makeOrder}
+					// onPress={this.makeOrder}
 					title={'Order'}
 				/>
 			</View>
@@ -213,6 +287,9 @@ export default class CartScreen extends Component {
 		return (
 			<View style={styles.container}>
 				<FlatList 
+					refreshing={this.state.isFetching}
+					onRefresh={this._load}x
+					extraData = {this.state}
 					data={this.state.cartItems} 
 					renderItem={({ item, index }) => this.renderCartItem(item, index)} 
 					keyExtractor={item => item.item_id} 

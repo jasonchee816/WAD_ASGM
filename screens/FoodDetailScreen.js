@@ -12,7 +12,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {BackButton} from '../UI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-let SQLite = require('react-native-sqlite-storage');
 
 let config = require('../Config');
 
@@ -25,11 +24,7 @@ export default class FoodDetailScreen extends Component {
       item_id: item.id,
       quantity: '1',
     }
-    this.db = SQLite.openDatabase(
-      {name: 'cartdb', createFromLocation: '~db.sqlite'},
-      this.openDb,
-      this.errorDb,
-    )
+    
     this._readSettings = this._readSettings.bind(this);
     this.addOne = this.addOne.bind(this);
     this.removeOne = this.removeOne.bind(this);
