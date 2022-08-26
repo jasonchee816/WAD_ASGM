@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {BackButton} from '../UI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -23,28 +23,32 @@ export default class FoodDetailScreen extends Component {
       user_id: '',
       item_id: item.id,
       quantity: '1',
-    }
-    
+    };
+
     this._readSettings = this._readSettings.bind(this);
     this.addOne = this.addOne.bind(this);
     this.removeOne = this.removeOne.bind(this);
+    this._check = this._check.bind(this);
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this._readSettings();
-    this.props.navigation.setOptions({headerTitle: this.state.item_id})
+    this.props.navigation.setOptions({headerTitle: this.state.item_id});
   }
 
-  addOne = () =>{
+  addOne = () => {
     this.setState({
       quantity: (Number(this.state.quantity) + Number(1)).toString(),
-    })
-  }
-  removeOne = () =>{
+    });
+  };
+  removeOne = () => {
     this.setState({
-      quantity: Math.max((Number(this.state.quantity) - Number(1)).toString(), 0),
-    })
-  }
+      quantity: Math.max(
+        (Number(this.state.quantity) - Number(1)).toString(),
+        1,
+      ),
+    });
+  };
 
   async _readSettings() {
     try {
@@ -55,6 +59,41 @@ export default class FoodDetailScreen extends Component {
     } catch (error) {
       console.log('## ERROR READING ITEM ##: ', error);
     }
+  }
+
+  _check() {
+    let url = config.settings.serverPath + '/api/checkCart';
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: this.state.user_id,
+        item_id: this.state.item_id,
+      }),
+    })
+      .then(response => {
+        if (!response.ok) {
+          Alert.alert('Error Requesting');
+          throw Error('Error ' + response.status);
+        }
+
+        return response.json();
+      })
+
+      .then(respondJson => {
+        if (respondJson != null) {
+          Alert.alert('Item already in Cart!');
+        } else {
+          this._save();
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   _save = async () => {
@@ -80,7 +119,7 @@ export default class FoodDetailScreen extends Component {
 
         return response.json();
       })
-      
+
       .then(respondJson => {
         if (respondJson.affected > 0) {
           Alert.alert('Added successfully.');
@@ -95,55 +134,51 @@ export default class FoodDetailScreen extends Component {
       });
   };
 
-
   render() {
     const item = this.props.route.params;
     return (
-      <SafeAreaView style={{ backgroundColor: 'white' }}>
-      <BackButton title="Details" onPress={this.props.navigation.goBack}/>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.menuDetailImageContainer}>
-          <Image source={{uri: item.image}} style={styles.image} />
-        </View>
-        <View style={styles.detailsContainer}>
-          <View style={styles.menuDetailNameContainer}>
-            <Text style={styles.name}>{item.name}</Text>
+      <SafeAreaView style={{backgroundColor: 'white'}}>
+        <BackButton title="Details" onPress={this.props.navigation.goBack} />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.menuDetailImageContainer}>
+            <Image source={{uri: item.image}} style={styles.image} />
           </View>
-          <Text style={styles.desc}>{item.desc}</Text>
-
-          {/* Button Container */}
-          <View style={styles.AddToCartButtonContainer}>
-            <View style={styles.addButton}>
-              <Ionicons
-                name="remove"
-                size={40}
-                color='pink'
-                onPress={this.removeOne}
-              />
+          <View style={styles.detailsContainer}>
+            <View style={styles.menuDetailNameContainer}>
+              <Text style={styles.name}>{item.name}</Text>
             </View>
-            <Text style={styles.quantityStyle}>{this.state.quantity}</Text>
-            <View style={styles.addButton}>
+            <Text style={styles.desc}>{item.desc}</Text>
+
+            {/* Button Container */}
+            <View style={styles.AddToCartButtonContainer}>
+              <View style={styles.addButton}>
+                <Ionicons
+                  name="remove"
+                  size={40}
+                  color="pink"
+                  onPress={this.removeOne}
+                />
+              </View>
+              <Text style={styles.quantityStyle}>{this.state.quantity}</Text>
+              <View style={styles.addButton}>
                 <Ionicons
                   name="add"
                   size={40}
-                  color='pink'
+                  color="pink"
                   onPress={this.addOne}
                 />
               </View>
             </View>
 
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={this._save}>
+            <TouchableOpacity activeOpacity={0.8} onPress={this._check}>
               <View style={styles.btnContainer}>
                 <Text style={styles.buttonTitle}>Add To Cart</Text>
               </View>
             </TouchableOpacity>
-
           </View>
         </ScrollView>
       </SafeAreaView>
-    )
+    );
   }
 }
 
@@ -172,12 +207,12 @@ const styles = StyleSheet.create({
   },
   image: {
     height: 220,
-     width: 220,
+    width: 220,
   },
   name: {
     fontSize: 25,
     fontWeight: 'bold',
-    color: 'white'
+    color: 'white',
   },
   desc: {
     fontSize: 20,
@@ -192,7 +227,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
-  quantityStyle:{
+  quantityStyle: {
     fontSize: 20,
     color: 'white',
     fontWeight: 'bold',
@@ -218,13 +253,13 @@ const styles = StyleSheet.create({
   buttonTitle: {
     color: 'pink',
     fontWeight: 'bold',
-    fontSize: 18
-},
+    fontSize: 18,
+  },
   btnContainer: {
     backgroundColor: 'white',
     height: 50,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-},
-})
+  },
+});

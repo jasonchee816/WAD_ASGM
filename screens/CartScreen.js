@@ -122,9 +122,6 @@ export default class CartScreen extends Component {
   }
 
   _addOrderItem(id, itemQuantity) {
-    console.log(this.state.order_id);
-    console.log(id);
-    console.log(itemQuantity);
     let url = config.settings.serverPath + '/api/addOrderItem';
 
     fetch(url, {

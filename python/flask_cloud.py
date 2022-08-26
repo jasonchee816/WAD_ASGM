@@ -175,6 +175,34 @@ def getCartDetail(user_id):
     else: 
         return jsonify(None), 200
 
+@app.route('/api/checkCart', methods=['POST'])
+def check_cart():
+    if not request.json:
+        abort(404)
+
+    check_item = (
+        request.json['item_id'],
+        request.json['user_id'],
+    )
+
+    db = sqlite3.connect(DB)
+    cursor = db.cursor()
+
+    cursor.execute('''
+        SELECT item_id, quantity FROM cart_items WHERE item_id = ? AND user_id=?
+    ''', check_item)
+
+
+    row = cursor.fetchone()
+    db.close()
+
+    if row:
+        row_as_dict = get_cart_row_as_dict(row)
+        return jsonify(row_as_dict), 200
+    else:
+        return jsonify(None), 200
+
+
 @app.route('/api/deleteCart', methods=['DELETE'])
 def delete():
     if not request.json:
