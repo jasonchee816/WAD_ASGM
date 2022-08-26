@@ -13,7 +13,7 @@ export default class ProfileScreen extends Component {
         super(props);
 
         this.state = {
-            id: '1',
+            id: '',
             async_password: '',
             isFetching: false,
             old_password: {
@@ -123,7 +123,6 @@ export default class ProfileScreen extends Component {
         } catch (error) {
             console.log('## ERROR SAVING ITEM ##: ', error);
         }  
-        // this.props.route.params.refresh();
         this._edit();
     }
 
@@ -138,7 +137,7 @@ export default class ProfileScreen extends Component {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            user_id: 1,
+            user_id: this.state.id,
             password: this.state.password.value,
             
           }),
