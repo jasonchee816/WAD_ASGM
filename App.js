@@ -139,24 +139,6 @@ class OrderHistoryStackScreen extends Component {
 }
 
 export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '', // Accessed by login screen, change password screen, cart screen
-      password: '', // Accessed by login screen, change password screen
-      cartItems: [
-        {
-          foodIndex: 0,
-          quantity: 1,
-        },
-        {
-          foodIndex: 1,
-          quantity: 2,
-        },
-      ],
-    };
-  }
-
   render() {
     return (
       <NavigationContainer>

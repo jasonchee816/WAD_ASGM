@@ -75,7 +75,7 @@ export default class OrderDetailsScreen extends Component {
           data={this.state.order_items}
           renderItem={({item}) => {
             let info = this.findItem(item.item_id);
-            let total = Number(item.quantity) * Number(info.price);
+            let total = (Number(item.quantity) * Number(info.price)).toFixed(2);
             return (
               <TouchableHighlight>
                 <View style={styles.orderDetailsCard}>
